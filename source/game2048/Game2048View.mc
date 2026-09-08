@@ -2,6 +2,7 @@ import Toybox.Graphics;
 import Toybox.WatchUi;
 import Toybox.Lang;
 import Toybox.Math;
+import Toybox.System;
 
 class Game2048View extends WatchUi.View {
 
@@ -35,10 +36,22 @@ class Game2048View extends WatchUi.View {
     function onLayout(dc as Dc) as Void {
         _width = dc.getWidth();
         _height = dc.getHeight();
-        var boardSize = (_width < _height ? _width : _height) - 16;
+        var minDim = (_width < _height ? _width : _height);
+        var isRound = (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_ROUND);
+
+        var boardSize;
+        if (isRound) {
+            // A square board's corners sit farther from the center than its
+            // edges, so it must shrink to the circle's inscribed square
+            // (side = radius * sqrt(2)) to stay clear of the round bezel.
+            boardSize = (minDim / 2.0 * Math.sqrt(2.0) * 0.94).toNumber();
+        } else {
+            boardSize = minDim - 16;
+        }
+
         _cellSize = (boardSize - _cellGap * (GRID_SIZE + 1)) / GRID_SIZE;
         boardSize = _cellSize * GRID_SIZE + _cellGap * (GRID_SIZE + 1);
-        _boardTop = _height - boardSize - 4;
+        _boardTop = (_height - boardSize) / 2;
         if (_boardTop < 24) {
             _boardTop = 24;
         }
