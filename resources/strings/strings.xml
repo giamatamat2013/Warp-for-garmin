@@ -1,0 +1,11 @@
+<strings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <string id="AppName">Warp Games</string>
+
+    <string id="game_pong">Pong</string>
+    <string id="game_2048">2048</string>
+
+    <string id="menu_label_easy">Easy</string>
+    <string id="menu_label_normal">Normal</string>
+    <string id="menu_label_hard">Hard</string>
+    <string id="menu_label_reset">Reset Game</string>
+</strings>

@@ -1,0 +1,4 @@
+<menu2 id="MainMenu" title="@Strings.AppName" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <menu-item id="item_pong" label="@Strings.game_pong" />
+    <menu-item id="item_2048" label="@Strings.game_2048" />
+</menu2>
