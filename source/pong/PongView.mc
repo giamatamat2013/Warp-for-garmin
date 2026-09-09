@@ -131,12 +131,33 @@ class PongView extends WatchUi.View {
         _playerY = clampToPlayfield(_playerY + dy, _playerX);
     }
 
+    // Random float in [min, max), used to keep ball trajectories from
+    // settling into a repeating loop.
+    private function randomFloat(min as Float, max as Float) as Float {
+        var r = (Math.rand() % 10000).abs() / 10000.0;
+        return min + (max - min) * r;
+    }
+
     private function resetBall() as Void {
         _ballX = _centerX;
         _ballY = _centerY;
         var speed = _ballSpeed * _speedMultiplier;
         _ballVelX = (_ballVelX > 0) ? -speed : speed;
-        _ballVelY = speed * 0.66;
+        var angleFactor = randomFloat(0.35, 0.85);
+        _ballVelY = (Math.rand() % 2 == 0) ? speed * angleFactor : -speed * angleFactor;
+    }
+
+    // Nudges the ball's vertical velocity by a small random amount on every
+    // paddle hit, clamped so it never goes fully flat or fully vertical.
+    private function deflectBall() as Void {
+        _ballVelY += randomFloat(-0.9, 0.9);
+        var maxVelY = _ballVelX.abs() * 1.3;
+        var minVelY = _ballVelX.abs() * 0.2;
+        if (_ballVelY.abs() > maxVelY) {
+            _ballVelY = (_ballVelY > 0) ? maxVelY : -maxVelY;
+        } else if (_ballVelY.abs() < minVelY) {
+            _ballVelY = (_ballVelY >= 0) ? minVelY : -minVelY;
+        }
     }
 
     private function updateGame() as Void {
@@ -169,6 +190,7 @@ class PongView extends WatchUi.View {
         if (_ballX <= PADDLE_MARGIN + PADDLE_WIDTH && _ballVelX < 0) {
             if (_ballY >= _aiY - half && _ballY <= _aiY + half) {
                 _ballVelX = -_ballVelX;
+                deflectBall();
             }
         }
 
@@ -176,6 +198,7 @@ class PongView extends WatchUi.View {
         if (_ballX >= _playerX - PADDLE_WIDTH / 2.0 && _ballVelX > 0) {
             if (_ballY >= _playerY - half && _ballY <= _playerY + half) {
                 _ballVelX = -_ballVelX;
+                deflectBall();
             }
         }
 
