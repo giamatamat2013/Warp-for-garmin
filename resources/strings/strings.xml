@@ -7,5 +7,9 @@
     <string id="menu_label_easy">Easy</string>
     <string id="menu_label_normal">Normal</string>
     <string id="menu_label_hard">Hard</string>
+    <string id="menu_label_speed">Speed</string>
+    <string id="menu_label_speed_slow">Slow</string>
+    <string id="menu_label_speed_normal">Normal</string>
+    <string id="menu_label_speed_fast">Fast</string>
     <string id="menu_label_reset">Reset Game</string>
 </strings>

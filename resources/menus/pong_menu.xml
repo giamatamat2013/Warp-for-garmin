@@ -2,5 +2,6 @@
     <menu-item id="item_easy" label="@Strings.menu_label_easy" />
     <menu-item id="item_normal" label="@Strings.menu_label_normal" />
     <menu-item id="item_hard" label="@Strings.menu_label_hard" />
+    <menu-item id="item_speed" label="@Strings.menu_label_speed" />
     <menu-item id="item_reset" label="@Strings.menu_label_reset" />
 </menu>

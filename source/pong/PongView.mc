@@ -13,6 +13,7 @@ class PongView extends WatchUi.View {
 
     private var _aiSpeed as Float = 3.5;
     private var _ballSpeed as Float = 3.0;
+    private var _speedMultiplier as Float = 1.0;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -110,6 +111,10 @@ class PongView extends WatchUi.View {
         _ballSpeed = ballSpeed;
     }
 
+    function setSpeedMultiplier(multiplier as Float) as Void {
+        _speedMultiplier = multiplier;
+    }
+
     function setPlayerY(y as Number) as Void {
         _playerY = clampToPlayfield(y.toFloat(), _playerX);
     }
@@ -129,8 +134,9 @@ class PongView extends WatchUi.View {
     private function resetBall() as Void {
         _ballX = _centerX;
         _ballY = _centerY;
-        _ballVelX = (_ballVelX > 0) ? -_ballSpeed : _ballSpeed;
-        _ballVelY = _ballSpeed * 0.66;
+        var speed = _ballSpeed * _speedMultiplier;
+        _ballVelX = (_ballVelX > 0) ? -speed : speed;
+        _ballVelY = speed * 0.66;
     }
 
     private function updateGame() as Void {
@@ -151,10 +157,11 @@ class PongView extends WatchUi.View {
         }
 
         // AI paddle tracks the ball
+        var aiSpeed = _aiSpeed * _speedMultiplier;
         if (_aiY < _ballY) {
-            _aiY += _aiSpeed;
+            _aiY += aiSpeed;
         } else if (_aiY > _ballY) {
-            _aiY -= _aiSpeed;
+            _aiY -= aiSpeed;
         }
         _aiY = clampToPlayfield(_aiY, _aiX);
 
