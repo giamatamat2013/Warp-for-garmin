@@ -35,6 +35,9 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
         } else if (id == :item_simon) {
             var view = new SimonView();
             WatchUi.pushView(view, new SimonDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_dino) {
+            var view = new DinoView();
+            WatchUi.pushView(view, new DinoDelegate(view), WatchUi.SLIDE_LEFT);
         }
     }
 

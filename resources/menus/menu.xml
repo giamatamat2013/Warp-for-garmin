@@ -6,4 +6,5 @@
     <menu-item id="item_breakout" label="@Strings.game_breakout" />
     <menu-item id="item_tictactoe" label="@Strings.game_tictactoe" />
     <menu-item id="item_simon" label="@Strings.game_simon" />
+    <menu-item id="item_dino" label="@Strings.game_dino" />
 </menu2>

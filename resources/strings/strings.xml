@@ -8,6 +8,7 @@
     <string id="game_breakout">Breakout</string>
     <string id="game_tictactoe">Tic-Tac-Toe</string>
     <string id="game_simon">Simon</string>
+    <string id="game_dino">Dino Runner</string>
 
     <string id="menu_label_difficulty">Difficulty</string>
     <string id="menu_label_very_easy">Very Easy</string>
