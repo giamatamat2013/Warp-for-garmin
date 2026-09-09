@@ -7,6 +7,7 @@ import Toybox.Lang;
 
 class DinoView extends WatchUi.View {
 
+    private const HIGH_SCORE_KEY = "dino_high";
     private const GRAVITY = 0.9;
     private const JUMP_VELOCITY = -11.0;
     private const DINO_SIZE = 14;
@@ -14,7 +15,7 @@ class DinoView extends WatchUi.View {
     private const OBSTACLE_MIN_HEIGHT = 14;
     private const OBSTACLE_MAX_HEIGHT = 30;
     private const BASE_SPEED = 3.5;
-    private const MAX_SPEED = 8.0;
+    private const BASE_MAX_SPEED = 8.0;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -33,9 +34,12 @@ class DinoView extends WatchUi.View {
     private var _obstacleHeight as Array<Number>;
     private var _obstaclePassed as Array<Boolean>;
     private var _spawnCooldown as Number = 0;
+    private var _spawnGapMultiplier as Float = 1.0;
+    private var _speedMultiplier as Float = 1.0;
 
     private var _speed as Float = BASE_SPEED;
     private var _score as Number = 0;
+    private var _highScore as Number = 0;
     private var _gameOver as Boolean = false;
     private var _timer as Timer.Timer?;
 
@@ -44,6 +48,15 @@ class DinoView extends WatchUi.View {
         _obstacleX = [];
         _obstacleHeight = [];
         _obstaclePassed = [];
+        _highScore = HighScores.get(HIGH_SCORE_KEY);
+    }
+
+    function setDifficulty(spawnGapMultiplier as Float) as Void {
+        _spawnGapMultiplier = spawnGapMultiplier;
+    }
+
+    function setSpeedMultiplier(multiplier as Float) as Void {
+        _speedMultiplier = multiplier;
     }
 
     function onLayout(dc as Dc) as Void {
@@ -80,7 +93,7 @@ class DinoView extends WatchUi.View {
         _obstacleHeight = [];
         _obstaclePassed = [];
         _spawnCooldown = 30;
-        _speed = BASE_SPEED;
+        _speed = BASE_SPEED * _speedMultiplier;
         _score = 0;
         _gameOver = false;
         WatchUi.requestUpdate();
@@ -116,12 +129,18 @@ class DinoView extends WatchUi.View {
         WatchUi.requestUpdate();
     }
 
+    private function markGameOver() as Void {
+        _gameOver = true;
+        HighScores.submit(HIGH_SCORE_KEY, _score);
+        _highScore = HighScores.get(HIGH_SCORE_KEY);
+    }
+
     private function spawnObstacle() as Void {
         var height = OBSTACLE_MIN_HEIGHT + (Math.rand() % (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT)).abs();
         _obstacleX.add(_width.toFloat() + 20.0);
         _obstacleHeight.add(height);
         _obstaclePassed.add(false);
-        _spawnCooldown = 40 + (Math.rand() % 40).abs();
+        _spawnCooldown = (( 40 + (Math.rand() % 40).abs()) * _spawnGapMultiplier).toNumber();
     }
 
     private function updateGame() as Void {
@@ -135,7 +154,8 @@ class DinoView extends WatchUi.View {
             }
         }
 
-        if (_speed < MAX_SPEED) {
+        var maxSpeed = BASE_MAX_SPEED * _speedMultiplier;
+        if (_speed < maxSpeed) {
             _speed += 0.0025;
         }
 
@@ -160,7 +180,7 @@ class DinoView extends WatchUi.View {
 
             if (_dinoX + DINO_SIZE > ox && _dinoX < ox + OBSTACLE_WIDTH) {
                 if (_dinoY + DINO_SIZE > _groundY - oh) {
-                    _gameOver = true;
+                    markGameOver();
                 }
             }
 
@@ -198,9 +218,9 @@ class DinoView extends WatchUi.View {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         if (_gameOver) {
             dc.drawText(_width / 2, _height / 2 - 10, Graphics.FONT_SMALL, "Game Over", Graphics.TEXT_JUSTIFY_CENTER);
-            dc.drawText(_width / 2, _height / 2 + 10, Graphics.FONT_TINY, "Score: " + _score.toString(), Graphics.TEXT_JUSTIFY_CENTER);
+            dc.drawText(_width / 2, _height / 2 + 10, Graphics.FONT_TINY, "Score: " + _score.toString() + "  Best: " + _highScore.toString(), Graphics.TEXT_JUSTIFY_CENTER);
         } else {
-            dc.drawText(_width / 2, 2, Graphics.FONT_TINY, _score.toString(), Graphics.TEXT_JUSTIFY_CENTER);
+            dc.drawText(_width / 2, 2, Graphics.FONT_TINY, _score.toString() + "  Best:" + _highScore.toString(), Graphics.TEXT_JUSTIFY_CENTER);
         }
     }
 

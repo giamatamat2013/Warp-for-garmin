@@ -25,7 +25,7 @@ class DinoDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        _view.resetGame();
+        WatchUi.pushView(new Rez.Menus.DinoMenu(), new DinoMenuDelegate(_view), WatchUi.SLIDE_UP);
         return true;
     }
 

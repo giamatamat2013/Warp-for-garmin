@@ -6,10 +6,12 @@ import Toybox.Math;
 
 class BreakoutView extends WatchUi.View {
 
+    private const HIGH_SCORE_KEY = "breakout_high";
     private const ROWS = 5;
     private const COLS = 6;
     private const PADDLE_HEIGHT = 6;
     private const BALL_RADIUS = 4;
+    private const BASE_BALL_SPEED = 2.5;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -18,7 +20,10 @@ class BreakoutView extends WatchUi.View {
     private var _boardSize as Number = 0;
     private var _brickW as Number = 0;
     private var _brickH as Number = 10;
+    private var _basePaddleWidth as Number = 0;
     private var _paddleWidth as Number = 0;
+    private var _paddleWidthMultiplier as Float = 1.0;
+    private var _speedMultiplier as Float = 1.0;
 
     private var _bricks as Array<Array<Boolean> >;
     private var _paddleX as Float = 0.0;
@@ -27,6 +32,7 @@ class BreakoutView extends WatchUi.View {
     private var _ballVelX as Float = 2.2;
     private var _ballVelY as Float = -2.2;
     private var _score as Number = 0;
+    private var _highScore as Number = 0;
     private var _lives as Number = 3;
     private var _gameOver as Boolean = false;
     private var _won as Boolean = false;
@@ -35,6 +41,7 @@ class BreakoutView extends WatchUi.View {
     function initialize() {
         View.initialize();
         _bricks = [];
+        _highScore = HighScores.get(HIGH_SCORE_KEY);
     }
 
     function onLayout(dc as Dc) as Void {
@@ -44,8 +51,18 @@ class BreakoutView extends WatchUi.View {
         _boardLeft = (_width - _boardSize) / 2;
         _boardTop = (_height - _boardSize) / 2;
         _brickW = _boardSize / COLS;
-        _paddleWidth = _boardSize / 5;
+        _basePaddleWidth = _boardSize / 5;
+        _paddleWidth = (_basePaddleWidth * _paddleWidthMultiplier).toNumber();
         resetGame();
+    }
+
+    function setDifficulty(paddleWidthMultiplier as Float) as Void {
+        _paddleWidthMultiplier = paddleWidthMultiplier;
+        _paddleWidth = (_basePaddleWidth * _paddleWidthMultiplier).toNumber();
+    }
+
+    function setSpeedMultiplier(multiplier as Float) as Void {
+        _speedMultiplier = multiplier;
     }
 
     function resetGame() as Void {
@@ -78,8 +95,9 @@ class BreakoutView extends WatchUi.View {
     private function resetBall() as Void {
         _ballX = _boardLeft + _boardSize / 2.0;
         _ballY = _boardTop + _boardSize * 0.7;
-        _ballVelX = randomFloat(-1.5, 1.5);
-        _ballVelY = -2.5;
+        var speed = BASE_BALL_SPEED * _speedMultiplier;
+        _ballVelX = randomFloat(-speed * 0.6, speed * 0.6);
+        _ballVelY = -speed;
     }
 
     function movePaddle(dx as Float) as Void {
@@ -137,10 +155,11 @@ class BreakoutView extends WatchUi.View {
         var paddleY = _boardTop + _boardSize - PADDLE_HEIGHT - 2;
         if (_ballY + BALL_RADIUS >= paddleY && _ballY + BALL_RADIUS <= paddleY + PADDLE_HEIGHT + 4 && _ballVelY > 0) {
             if (_ballX >= _paddleX - BALL_RADIUS && _ballX <= _paddleX + _paddleWidth + BALL_RADIUS) {
-                _ballVelY = -_ballVelY.abs();
+                var speed = BASE_BALL_SPEED * _speedMultiplier;
+                _ballVelY = -speed;
                 // Deflect based on where it hit the paddle, plus a small random nudge.
                 var hitPos = (_ballX - _paddleX) / _paddleWidth - 0.5;
-                _ballVelX = hitPos * 5.0 + randomFloat(-0.3, 0.3);
+                _ballVelX = hitPos * speed * 2.0 + randomFloat(-0.3, 0.3);
             }
         }
 
@@ -153,6 +172,7 @@ class BreakoutView extends WatchUi.View {
             _score += 1;
             if (allBricksCleared()) {
                 _won = true;
+                submitScore();
             }
         }
 
@@ -160,10 +180,16 @@ class BreakoutView extends WatchUi.View {
             _lives -= 1;
             if (_lives <= 0) {
                 _gameOver = true;
+                submitScore();
             } else {
                 resetBall();
             }
         }
+    }
+
+    private function submitScore() as Void {
+        HighScores.submit(HIGH_SCORE_KEY, _score);
+        _highScore = HighScores.get(HIGH_SCORE_KEY);
     }
 
     private function allBricksCleared() as Boolean {
@@ -186,7 +212,7 @@ class BreakoutView extends WatchUi.View {
         dc.clear();
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(_width / 2, 2, Graphics.FONT_TINY, "Score:" + _score.toString() + "  Lives:" + _lives.toString(), Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(_width / 2, 2, Graphics.FONT_XTINY, "Score:" + _score.toString() + " Lives:" + _lives.toString() + " Best:" + _highScore.toString(), Graphics.TEXT_JUSTIFY_CENTER);
 
         var colors = [Graphics.COLOR_RED, Graphics.COLOR_ORANGE, Graphics.COLOR_YELLOW, Graphics.COLOR_GREEN, Graphics.COLOR_BLUE] as Array<Number>;
         var r = 0;
@@ -212,7 +238,8 @@ class BreakoutView extends WatchUi.View {
         if (_gameOver || _won) {
             dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
             var msg = _won ? "You Win!" : "Game Over";
-            dc.drawText(_width / 2, _height / 2, Graphics.FONT_SMALL, msg, Graphics.TEXT_JUSTIFY_CENTER);
+            dc.drawText(_width / 2, _height / 2 - 10, Graphics.FONT_SMALL, msg, Graphics.TEXT_JUSTIFY_CENTER);
+            dc.drawText(_width / 2, _height / 2 + 10, Graphics.FONT_TINY, "Score: " + _score.toString() + "  Best: " + _highScore.toString(), Graphics.TEXT_JUSTIFY_CENTER);
         }
     }
 

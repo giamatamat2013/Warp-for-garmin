@@ -41,7 +41,7 @@ class BreakoutDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        _view.resetGame();
+        WatchUi.pushView(new Rez.Menus.BreakoutMenu(), new BreakoutMenuDelegate(_view), WatchUi.SLIDE_UP);
         return true;
     }
 
