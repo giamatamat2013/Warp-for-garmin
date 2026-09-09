@@ -43,7 +43,7 @@ class SnakeDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        _view.resetGame();
+        WatchUi.pushView(new Rez.Menus.SnakeMenu(), new SnakeMenuDelegate(_view), WatchUi.SLIDE_UP);
         return true;
     }
 

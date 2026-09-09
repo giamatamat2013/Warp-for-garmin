@@ -16,7 +16,7 @@ class Game2048Delegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        _view.resetGame();
+        WatchUi.pushView(new Rez.Menus.Game2048Menu(), new Game2048MenuDelegate(_view), WatchUi.SLIDE_UP);
         return true;
     }
 

@@ -7,12 +7,14 @@ import Toybox.Lang;
 
 class FlappyView extends WatchUi.View {
 
+    private const HIGH_SCORE_KEY = "flappy_high";
+
     private const GRAVITY = 0.5;
     private const FLAP_VELOCITY = -6.0;
     private const BIRD_RADIUS = 7;
     private const PIPE_WIDTH = 16;
     private const PIPE_SPACING = 120;
-    private const PIPE_SPEED = 2.5;
+    private const BASE_PIPE_SPEED = 2.5;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -24,13 +26,17 @@ class FlappyView extends WatchUi.View {
     private var _birdX as Float = 0.0;
     private var _birdY as Float = 0.0;
     private var _birdVelY as Float = 0.0;
+    private var _baseGapHeight as Float = 70.0;
     private var _gapHeight as Float = 70.0;
+    private var _gapMultiplier as Float = 1.0;
+    private var _speedMultiplier as Float = 1.0;
 
     private var _pipeX as Array<Float>;
     private var _pipeGapY as Array<Float>;
     private var _pipePassed as Array<Boolean>;
 
     private var _score as Number = 0;
+    private var _highScore as Number = 0;
     private var _gameOver as Boolean = false;
     private var _timer as Timer.Timer?;
 
@@ -39,6 +45,7 @@ class FlappyView extends WatchUi.View {
         _pipeX = [];
         _pipeGapY = [];
         _pipePassed = [];
+        _highScore = HighScores.get(HIGH_SCORE_KEY);
     }
 
     function onLayout(dc as Dc) as Void {
@@ -50,8 +57,18 @@ class FlappyView extends WatchUi.View {
         _isRound = (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_ROUND);
         _birdX = _width * 0.3;
         var corridor = verticalHalfRangeAt(_birdX) * 2.0;
-        _gapHeight = corridor * 0.5;
+        _baseGapHeight = corridor * 0.5;
+        _gapHeight = _baseGapHeight * _gapMultiplier;
         resetGame();
+    }
+
+    function setDifficulty(gapMultiplier as Float) as Void {
+        _gapMultiplier = gapMultiplier;
+        _gapHeight = _baseGapHeight * _gapMultiplier;
+    }
+
+    function setSpeedMultiplier(multiplier as Float) as Void {
+        _speedMultiplier = multiplier;
     }
 
     // Half the vertical space available at horizontal position x, accounting
@@ -77,6 +94,12 @@ class FlappyView extends WatchUi.View {
         _score = 0;
         _gameOver = false;
         spawnPipe(_width.toFloat() + 40.0);
+    }
+
+    private function markGameOver() as Void {
+        _gameOver = true;
+        HighScores.submit(HIGH_SCORE_KEY, _score);
+        _highScore = HighScores.get(HIGH_SCORE_KEY);
     }
 
     private function spawnPipe(x as Float) as Void {
@@ -128,13 +151,14 @@ class FlappyView extends WatchUi.View {
         var top = _centerY - range;
         var bottom = _centerY + range;
         if (_birdY - BIRD_RADIUS <= top || _birdY + BIRD_RADIUS >= bottom) {
-            _gameOver = true;
+            markGameOver();
             return;
         }
 
+        var pipeSpeed = BASE_PIPE_SPEED * _speedMultiplier;
         var i = 0;
         while (i < _pipeX.size()) {
-            _pipeX[i] = _pipeX[i] - PIPE_SPEED;
+            _pipeX[i] = _pipeX[i] - pipeSpeed;
             i++;
         }
 
@@ -160,7 +184,7 @@ class FlappyView extends WatchUi.View {
 
             if (_birdX + BIRD_RADIUS > px && _birdX - BIRD_RADIUS < px + PIPE_WIDTH) {
                 if (_birdY - BIRD_RADIUS < gapY - _gapHeight / 2.0 || _birdY + BIRD_RADIUS > gapY + _gapHeight / 2.0) {
-                    _gameOver = true;
+                    markGameOver();
                 }
             }
 
@@ -201,9 +225,9 @@ class FlappyView extends WatchUi.View {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         if (_gameOver) {
             dc.drawText(_width / 2, _height / 2 - 10, Graphics.FONT_SMALL, "Game Over", Graphics.TEXT_JUSTIFY_CENTER);
-            dc.drawText(_width / 2, _height / 2 + 10, Graphics.FONT_TINY, "Score: " + _score.toString(), Graphics.TEXT_JUSTIFY_CENTER);
+            dc.drawText(_width / 2, _height / 2 + 10, Graphics.FONT_TINY, "Score: " + _score.toString() + "  Best: " + _highScore.toString(), Graphics.TEXT_JUSTIFY_CENTER);
         } else {
-            dc.drawText(_width / 2, 2, Graphics.FONT_TINY, _score.toString(), Graphics.TEXT_JUSTIFY_CENTER);
+            dc.drawText(_width / 2, 2, Graphics.FONT_TINY, _score.toString() + "  Best:" + _highScore.toString(), Graphics.TEXT_JUSTIFY_CENTER);
         }
     }
 

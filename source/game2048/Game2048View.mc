@@ -3,13 +3,18 @@ import Toybox.WatchUi;
 import Toybox.Lang;
 import Toybox.Math;
 import Toybox.System;
+import Toybox.Application.Storage;
 
 class Game2048View extends WatchUi.View {
 
-    private const GRID_SIZE = 4;
+    private const SAVE_KEY = "2048_save";
+    private const HIGH_SCORE_KEY = "2048_high";
+    private const DEFAULT_GRID_SIZE = 4;
 
+    private var _gridSize as Number = DEFAULT_GRID_SIZE;
     private var _grid as Array<Array<Number> >;
     private var _score as Number = 0;
+    private var _highScore as Number = 0;
     private var _gameOver as Boolean = false;
 
     private var _width as Number = 0;
@@ -20,22 +25,55 @@ class Game2048View extends WatchUi.View {
 
     function initialize() {
         View.initialize();
+        _highScore = HighScores.get(HIGH_SCORE_KEY);
         _grid = newEmptyGrid();
-        spawnRandomTile();
-        spawnRandomTile();
+        if (!loadSavedGame()) {
+            startNewGame(DEFAULT_GRID_SIZE);
+        }
     }
 
     private function newEmptyGrid() as Array<Array<Number> > {
         var grid = [] as Array<Array<Number> >;
-        for (var r = 0; r < GRID_SIZE; r++) {
-            grid.add([0, 0, 0, 0]);
+        for (var r = 0; r < _gridSize; r++) {
+            var row = [] as Array<Number>;
+            for (var c = 0; c < _gridSize; c++) {
+                row.add(0);
+            }
+            grid.add(row);
         }
         return grid;
+    }
+
+    // Returns true if a saved game was found and restored.
+    private function loadSavedGame() as Boolean {
+        var save = Storage.getValue(SAVE_KEY);
+        if (save == null) {
+            return false;
+        }
+        var dict = save as Dictionary;
+        _gridSize = dict.get("gridSize") as Number;
+        _grid = dict.get("grid") as Array<Array<Number> >;
+        _score = dict.get("score") as Number;
+        _gameOver = dict.get("gameOver") as Boolean;
+        return true;
+    }
+
+    private function saveGame() as Void {
+        Storage.setValue(SAVE_KEY, {
+            "gridSize" => _gridSize,
+            "grid" => _grid,
+            "score" => _score,
+            "gameOver" => _gameOver,
+        });
     }
 
     function onLayout(dc as Dc) as Void {
         _width = dc.getWidth();
         _height = dc.getHeight();
+        layoutBoard();
+    }
+
+    private function layoutBoard() as Void {
         var minDim = (_width < _height ? _width : _height);
         var isRound = (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_ROUND);
 
@@ -49,21 +87,36 @@ class Game2048View extends WatchUi.View {
             boardSize = minDim - 16;
         }
 
-        _cellSize = (boardSize - _cellGap * (GRID_SIZE + 1)) / GRID_SIZE;
-        boardSize = _cellSize * GRID_SIZE + _cellGap * (GRID_SIZE + 1);
+        _cellSize = (boardSize - _cellGap * (_gridSize + 1)) / _gridSize;
+        boardSize = _cellSize * _gridSize + _cellGap * (_gridSize + 1);
         _boardTop = (_height - boardSize) / 2;
         if (_boardTop < 24) {
             _boardTop = 24;
         }
     }
 
-    function resetGame() as Void {
+    // Changing grid size starts a fresh board since existing tiles don't
+    // map onto a different-sized grid.
+    function setDifficulty(gridSize as Number) as Void {
+        startNewGame(gridSize);
+    }
+
+    private function startNewGame(gridSize as Number) as Void {
+        _gridSize = gridSize;
+        if (_width > 0) {
+            layoutBoard();
+        }
         _grid = newEmptyGrid();
         _score = 0;
         _gameOver = false;
         spawnRandomTile();
         spawnRandomTile();
+        saveGame();
         WatchUi.requestUpdate();
+    }
+
+    function resetGame() as Void {
+        startNewGame(_gridSize);
     }
 
     function handleSwipe(direction as WatchUi.SwipeDirection) as Void {
@@ -87,15 +140,18 @@ class Game2048View extends WatchUi.View {
             spawnRandomTile();
             if (isGameOver()) {
                 _gameOver = true;
+                HighScores.submit(HIGH_SCORE_KEY, _score);
+                _highScore = HighScores.get(HIGH_SCORE_KEY);
             }
+            saveGame();
         }
         WatchUi.requestUpdate();
     }
 
     private function flatten() as Array<Number> {
         var out = [] as Array<Number>;
-        for (var r = 0; r < GRID_SIZE; r++) {
-            for (var c = 0; c < GRID_SIZE; c++) {
+        for (var r = 0; r < _gridSize; r++) {
+            for (var c = 0; c < _gridSize; c++) {
                 out.add(_grid[r][c]);
             }
         }
@@ -112,7 +168,7 @@ class Game2048View extends WatchUi.View {
     }
 
     // Slides non-zero values together and merges equal adjacent pairs, in
-    // order, padding the result back out to GRID_SIZE with zeros.
+    // order, padding the result back out to _gridSize with zeros.
     private function processLine(line as Array<Number>) as Array<Number> {
         var vals = [] as Array<Number>;
         for (var i = 0; i < line.size(); i++) {
@@ -133,7 +189,7 @@ class Game2048View extends WatchUi.View {
                 i += 1;
             }
         }
-        while (merged.size() < GRID_SIZE) {
+        while (merged.size() < _gridSize) {
             merged.add(0);
         }
         return merged;
@@ -148,47 +204,47 @@ class Game2048View extends WatchUi.View {
     }
 
     private function moveLeft() as Void {
-        for (var r = 0; r < GRID_SIZE; r++) {
+        for (var r = 0; r < _gridSize; r++) {
             _grid[r] = processLine(_grid[r]);
         }
     }
 
     private function moveRight() as Void {
-        for (var r = 0; r < GRID_SIZE; r++) {
+        for (var r = 0; r < _gridSize; r++) {
             _grid[r] = reversed(processLine(reversed(_grid[r])));
         }
     }
 
     private function getCol(c as Number) as Array<Number> {
         var col = [] as Array<Number>;
-        for (var r = 0; r < GRID_SIZE; r++) {
+        for (var r = 0; r < _gridSize; r++) {
             col.add(_grid[r][c]);
         }
         return col;
     }
 
     private function setCol(c as Number, col as Array<Number>) as Void {
-        for (var r = 0; r < GRID_SIZE; r++) {
+        for (var r = 0; r < _gridSize; r++) {
             _grid[r][c] = col[r];
         }
     }
 
     private function moveUp() as Void {
-        for (var c = 0; c < GRID_SIZE; c++) {
+        for (var c = 0; c < _gridSize; c++) {
             setCol(c, processLine(getCol(c)));
         }
     }
 
     private function moveDown() as Void {
-        for (var c = 0; c < GRID_SIZE; c++) {
+        for (var c = 0; c < _gridSize; c++) {
             setCol(c, reversed(processLine(reversed(getCol(c)))));
         }
     }
 
     private function spawnRandomTile() as Void {
         var empty = [] as Array<[Number, Number]>;
-        for (var r = 0; r < GRID_SIZE; r++) {
-            for (var c = 0; c < GRID_SIZE; c++) {
+        for (var r = 0; r < _gridSize; r++) {
+            for (var c = 0; c < _gridSize; c++) {
                 if (_grid[r][c] == 0) {
                     empty.add([r, c]);
                 }
@@ -203,15 +259,15 @@ class Game2048View extends WatchUi.View {
     }
 
     private function isGameOver() as Boolean {
-        for (var r = 0; r < GRID_SIZE; r++) {
-            for (var c = 0; c < GRID_SIZE; c++) {
+        for (var r = 0; r < _gridSize; r++) {
+            for (var c = 0; c < _gridSize; c++) {
                 if (_grid[r][c] == 0) {
                     return false;
                 }
-                if (c + 1 < GRID_SIZE && _grid[r][c] == _grid[r][c + 1]) {
+                if (c + 1 < _gridSize && _grid[r][c] == _grid[r][c + 1]) {
                     return false;
                 }
-                if (r + 1 < GRID_SIZE && _grid[r][c] == _grid[r + 1][c]) {
+                if (r + 1 < _gridSize && _grid[r][c] == _grid[r + 1][c]) {
                     return false;
                 }
             }
@@ -243,12 +299,12 @@ class Game2048View extends WatchUi.View {
         dc.clear();
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        var label = _gameOver ? "Game Over  " + _score.toString() : "Score: " + _score.toString();
-        dc.drawText(_width / 2, 2, Graphics.FONT_TINY, label, Graphics.TEXT_JUSTIFY_CENTER);
+        var label = _gameOver ? "Game Over  " + _score.toString() + "  Best:" + _highScore.toString() : "Score: " + _score.toString() + "  Best:" + _highScore.toString();
+        dc.drawText(_width / 2, 2, Graphics.FONT_XTINY, label, Graphics.TEXT_JUSTIFY_CENTER);
 
-        for (var r = 0; r < GRID_SIZE; r++) {
-            for (var c = 0; c < GRID_SIZE; c++) {
-                var x = (_width - (_cellSize * GRID_SIZE + _cellGap * (GRID_SIZE + 1))) / 2 + _cellGap + c * (_cellSize + _cellGap);
+        for (var r = 0; r < _gridSize; r++) {
+            for (var c = 0; c < _gridSize; c++) {
+                var x = (_width - (_cellSize * _gridSize + _cellGap * (_gridSize + 1))) / 2 + _cellGap + c * (_cellSize + _cellGap);
                 var y = _boardTop + _cellGap + r * (_cellSize + _cellGap);
                 var v = _grid[r][c];
                 dc.setColor(tileColor(v), tileColor(v));

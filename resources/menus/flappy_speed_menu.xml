@@ -1,0 +1,7 @@
+<menu id="FlappySpeedMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <menu-item id="item_speed_very_slow" label="@Strings.menu_label_speed_very_slow" />
+    <menu-item id="item_speed_slow" label="@Strings.menu_label_speed_slow" />
+    <menu-item id="item_speed_normal" label="@Strings.menu_label_speed_normal" />
+    <menu-item id="item_speed_fast" label="@Strings.menu_label_speed_fast" />
+    <menu-item id="item_speed_very_fast" label="@Strings.menu_label_speed_very_fast" />
+</menu>

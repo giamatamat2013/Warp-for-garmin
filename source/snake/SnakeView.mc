@@ -6,11 +6,15 @@ import Toybox.Math;
 
 class SnakeView extends WatchUi.View {
 
-    private const GRID_SIZE = 12;
+    private const HIGH_SCORE_KEY = "snake_high";
+    private const BASE_TICK_MS = 160;
     private const DIR_UP = 0;
     private const DIR_DOWN = 1;
     private const DIR_LEFT = 2;
     private const DIR_RIGHT = 3;
+
+    private var _gridSize as Number = 12;
+    private var _speedMultiplier as Float = 1.0;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -23,6 +27,7 @@ class SnakeView extends WatchUi.View {
     private var _pendingDirection as Number = DIR_RIGHT;
     private var _food as Array<Number>;
     private var _score as Number = 0;
+    private var _highScore as Number = 0;
     private var _gameOver as Boolean = false;
     private var _timer as Timer.Timer?;
 
@@ -30,21 +35,39 @@ class SnakeView extends WatchUi.View {
         View.initialize();
         _body = [];
         _food = [0, 0];
+        _highScore = HighScores.get(HIGH_SCORE_KEY);
     }
 
     function onLayout(dc as Dc) as Void {
         _width = dc.getWidth();
         _height = dc.getHeight();
-        var boardSize = BoardMetrics.squareBoardSize(_width, _height, 16);
-        _cellSize = boardSize / GRID_SIZE;
-        boardSize = _cellSize * GRID_SIZE;
-        _boardLeft = (_width - boardSize) / 2;
-        _boardTop = (_height - boardSize) / 2;
+        layoutBoard();
         resetGame();
     }
 
+    private function layoutBoard() as Void {
+        var boardSize = BoardMetrics.squareBoardSize(_width, _height, 16);
+        _cellSize = boardSize / _gridSize;
+        boardSize = _cellSize * _gridSize;
+        _boardLeft = (_width - boardSize) / 2;
+        _boardTop = (_height - boardSize) / 2;
+    }
+
+    function setDifficulty(gridSize as Number) as Void {
+        _gridSize = gridSize;
+        if (_width > 0) {
+            layoutBoard();
+        }
+        resetGame();
+    }
+
+    function setSpeedMultiplier(multiplier as Float) as Void {
+        _speedMultiplier = multiplier;
+        restartTimer();
+    }
+
     function resetGame() as Void {
-        var mid = GRID_SIZE / 2;
+        var mid = _gridSize / 2;
         _body = [[mid, mid - 1], [mid, mid], [mid, mid + 1]] as Array<Array<Number> >;
         _direction = DIR_RIGHT;
         _pendingDirection = DIR_RIGHT;
@@ -56,8 +79,8 @@ class SnakeView extends WatchUi.View {
 
     private function spawnFood() as Void {
         while (true) {
-            var r = (Math.rand() % GRID_SIZE).abs();
-            var c = (Math.rand() % GRID_SIZE).abs();
+            var r = (Math.rand() % _gridSize).abs();
+            var c = (Math.rand() % _gridSize).abs();
             if (!occupiesCellIn(_body, r, c)) {
                 _food = [r, c];
                 return;
@@ -75,8 +98,7 @@ class SnakeView extends WatchUi.View {
     }
 
     function onShow() as Void {
-        _timer = new Timer.Timer();
-        _timer.start(method(:onTimerTick), 160, true);
+        restartTimer();
     }
 
     function onHide() as Void {
@@ -84,6 +106,15 @@ class SnakeView extends WatchUi.View {
             _timer.stop();
             _timer = null;
         }
+    }
+
+    private function restartTimer() as Void {
+        if (_timer != null) {
+            _timer.stop();
+        }
+        _timer = new Timer.Timer();
+        var interval = (BASE_TICK_MS / _speedMultiplier).toNumber();
+        _timer.start(method(:onTimerTick), interval, true);
     }
 
     function onTimerTick() as Void {
@@ -108,8 +139,8 @@ class SnakeView extends WatchUi.View {
             c += 1;
         }
 
-        if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) {
-            _gameOver = true;
+        if (r < 0 || r >= _gridSize || c < 0 || c >= _gridSize) {
+            markGameOver();
             return;
         }
 
@@ -119,7 +150,7 @@ class SnakeView extends WatchUi.View {
         // so the cell it's vacating is not itself a collision.
         var bodyToCheck = ateFood ? _body : _body.slice(1, null) as Array<Array<Number> >;
         if (occupiesCellIn(bodyToCheck, r, c)) {
-            _gameOver = true;
+            markGameOver();
             return;
         }
 
@@ -132,6 +163,12 @@ class SnakeView extends WatchUi.View {
             _score += 1;
             spawnFood();
         }
+    }
+
+    private function markGameOver() as Void {
+        _gameOver = true;
+        HighScores.submit(HIGH_SCORE_KEY, _score);
+        _highScore = HighScores.get(HIGH_SCORE_KEY);
     }
 
     private function occupiesCellIn(body as Array<Array<Number> >, r as Number, c as Number) as Boolean {
@@ -150,8 +187,8 @@ class SnakeView extends WatchUi.View {
         dc.clear();
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        var label = _gameOver ? "Game Over  " + _score.toString() : "Score: " + _score.toString();
-        dc.drawText(_width / 2, 2, Graphics.FONT_TINY, label, Graphics.TEXT_JUSTIFY_CENTER);
+        var label = _gameOver ? "Game Over  " + _score.toString() + "  Best:" + _highScore.toString() : "Score: " + _score.toString() + "  Best:" + _highScore.toString();
+        dc.drawText(_width / 2, 2, Graphics.FONT_XTINY, label, Graphics.TEXT_JUSTIFY_CENTER);
 
         dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_RED);
         dc.fillRectangle(_boardLeft + _food[1] * _cellSize, _boardTop + _food[0] * _cellSize, _cellSize, _cellSize);
