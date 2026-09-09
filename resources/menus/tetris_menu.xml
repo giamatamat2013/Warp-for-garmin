@@ -1,0 +1,5 @@
+<menu id="TetrisMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <menu-item id="item_difficulty" label="@Strings.menu_label_difficulty" />
+    <menu-item id="item_speed" label="@Strings.menu_label_speed" />
+    <menu-item id="item_reset" label="@Strings.menu_label_reset" />
+</menu>

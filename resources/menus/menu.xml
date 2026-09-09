@@ -7,4 +7,5 @@
     <menu-item id="item_tictactoe" label="@Strings.game_tictactoe" />
     <menu-item id="item_simon" label="@Strings.game_simon" />
     <menu-item id="item_dino" label="@Strings.game_dino" />
+    <menu-item id="item_tetris" label="@Strings.game_tetris" />
 </menu2>
