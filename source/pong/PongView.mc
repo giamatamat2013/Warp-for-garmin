@@ -13,7 +13,10 @@ class PongView extends WatchUi.View {
 
     private var _aiSpeed as Float = 3.5;
     private var _ballSpeed as Float = 3.0;
+    private var _aiAccuracy as Float = 0.75;
     private var _speedMultiplier as Float = 1.0;
+    private var _aiTargetOffset as Float = 0.0;
+    private var _aiDecided as Boolean = false;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -106,9 +109,10 @@ class PongView extends WatchUi.View {
         return _height;
     }
 
-    function setDifficulty(aiSpeed as Float, ballSpeed as Float) as Void {
+    function setDifficulty(aiSpeed as Float, ballSpeed as Float, aiAccuracy as Float) as Void {
         _aiSpeed = aiSpeed;
         _ballSpeed = ballSpeed;
+        _aiAccuracy = aiAccuracy;
     }
 
     function setSpeedMultiplier(multiplier as Float) as Void {
@@ -177,11 +181,25 @@ class PongView extends WatchUi.View {
             _ballVelY = -_ballVelY;
         }
 
-        // AI paddle tracks the ball
+        // AI paddle tracks the ball, but only "decides" where to move once
+        // per approach (when the ball turns toward it) rather than every
+        // tick. Below-perfect accuracy adds a persistent aim error for that
+        // approach, so a low-accuracy AI can genuinely misjudge and miss
+        // instead of the error averaging out over the rally.
+        if (_ballVelX < 0) {
+            if (!_aiDecided) {
+                var maxOffset = (1.0 - _aiAccuracy) * PADDLE_HEIGHT * 3.0;
+                _aiTargetOffset = randomFloat(-maxOffset, maxOffset);
+                _aiDecided = true;
+            }
+        } else {
+            _aiDecided = false;
+        }
+        var aiTarget = _ballY + _aiTargetOffset;
         var aiSpeed = _aiSpeed * _speedMultiplier;
-        if (_aiY < _ballY) {
+        if (_aiY < aiTarget) {
             _aiY += aiSpeed;
-        } else if (_aiY > _ballY) {
+        } else if (_aiY > aiTarget) {
             _aiY -= aiSpeed;
         }
         _aiY = clampToPlayfield(_aiY, _aiX);

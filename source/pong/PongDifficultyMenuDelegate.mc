@@ -12,15 +12,15 @@ class PongDifficultyMenuDelegate extends WatchUi.MenuInputDelegate {
 
     function onMenuItem(item as Symbol) as Void {
         if (item == :item_difficulty_very_easy) {
-            _view.setDifficulty(1.2, 1.5);
+            _view.setDifficulty(1.2, 1.5, 0.35);
         } else if (item == :item_difficulty_easy) {
-            _view.setDifficulty(2.0, 2.2);
+            _view.setDifficulty(2.0, 2.2, 0.55);
         } else if (item == :item_difficulty_normal) {
-            _view.setDifficulty(3.5, 3.0);
+            _view.setDifficulty(3.5, 3.0, 0.75);
         } else if (item == :item_difficulty_hard) {
-            _view.setDifficulty(5.5, 4.5);
+            _view.setDifficulty(5.5, 4.5, 0.9);
         } else if (item == :item_difficulty_very_hard) {
-            _view.setDifficulty(7.5, 6.0);
+            _view.setDifficulty(7.5, 6.0, 1.0);
         }
     }
 
