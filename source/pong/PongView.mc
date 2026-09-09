@@ -13,10 +13,15 @@ class PongView extends WatchUi.View {
 
     private var _aiSpeed as Float = 3.5;
     private var _ballSpeed as Float = 3.0;
-    private var _aiAccuracy as Float = 0.75;
     private var _speedMultiplier as Float = 1.0;
-    private var _aiTargetOffset as Float = 0.0;
-    private var _aiDecided as Boolean = false;
+    // How many ticks the AI waits between looks at the ball. At 1 it tracks
+    // every tick (perfect); higher values mean it chases stale information,
+    // which is a robust way to make it miss (a fixed pixel aim-error instead
+    // got absorbed by the paddle's own edge-of-court clamping and barely
+    // changed the outcome).
+    private var _aiReactionTicks as Number = 4;
+    private var _aiTickCounter as Number = 0;
+    private var _aiTarget as Float = 0.0;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -58,6 +63,7 @@ class PongView extends WatchUi.View {
 
         _playerY = _centerY;
         _aiY = _centerY;
+        _aiTarget = _centerY;
         resetBall();
     }
 
@@ -109,10 +115,10 @@ class PongView extends WatchUi.View {
         return _height;
     }
 
-    function setDifficulty(aiSpeed as Float, ballSpeed as Float, aiAccuracy as Float) as Void {
+    function setDifficulty(aiSpeed as Float, ballSpeed as Float, aiReactionTicks as Number) as Void {
         _aiSpeed = aiSpeed;
         _ballSpeed = ballSpeed;
-        _aiAccuracy = aiAccuracy;
+        _aiReactionTicks = aiReactionTicks;
     }
 
     function setSpeedMultiplier(multiplier as Float) as Void {
@@ -181,25 +187,21 @@ class PongView extends WatchUi.View {
             _ballVelY = -_ballVelY;
         }
 
-        // AI paddle tracks the ball, but only "decides" where to move once
-        // per approach (when the ball turns toward it) rather than every
-        // tick. Below-perfect accuracy adds a persistent aim error for that
-        // approach, so a low-accuracy AI can genuinely misjudge and miss
-        // instead of the error averaging out over the rally.
-        if (_ballVelX < 0) {
-            if (!_aiDecided) {
-                var maxOffset = (1.0 - _aiAccuracy) * PADDLE_HEIGHT * 3.0;
-                _aiTargetOffset = randomFloat(-maxOffset, maxOffset);
-                _aiDecided = true;
-            }
-        } else {
-            _aiDecided = false;
+        // AI paddle only re-reads the ball's position every _aiReactionTicks
+        // ticks, then walks toward that (possibly stale) target in between.
+        // A ball that keeps bouncing off the top/bottom walls (common given
+        // deflectBall's steep angles) easily moves somewhere else entirely
+        // during a long reaction gap, so a slow-reacting AI genuinely
+        // misjudges instead of always eventually converging on the truth.
+        _aiTickCounter += 1;
+        if (_aiTickCounter >= _aiReactionTicks) {
+            _aiTickCounter = 0;
+            _aiTarget = _ballY;
         }
-        var aiTarget = _ballY + _aiTargetOffset;
         var aiSpeed = _aiSpeed * _speedMultiplier;
-        if (_aiY < aiTarget) {
+        if (_aiY < _aiTarget) {
             _aiY += aiSpeed;
-        } else if (_aiY > aiTarget) {
+        } else if (_aiY > _aiTarget) {
             _aiY -= aiSpeed;
         }
         _aiY = clampToPlayfield(_aiY, _aiX);
