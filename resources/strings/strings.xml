@@ -3,6 +3,11 @@
 
     <string id="game_pong">Pong</string>
     <string id="game_2048">2048</string>
+    <string id="game_flappy">Flappy Bird</string>
+    <string id="game_snake">Snake</string>
+    <string id="game_breakout">Breakout</string>
+    <string id="game_tictactoe">Tic-Tac-Toe</string>
+    <string id="game_simon">Simon</string>
 
     <string id="menu_label_difficulty">Difficulty</string>
     <string id="menu_label_very_easy">Very Easy</string>

@@ -20,6 +20,21 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
         } else if (id == :item_2048) {
             var view = new Game2048View();
             WatchUi.pushView(view, new Game2048Delegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_flappy) {
+            var view = new FlappyView();
+            WatchUi.pushView(view, new FlappyDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_snake) {
+            var view = new SnakeView();
+            WatchUi.pushView(view, new SnakeDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_breakout) {
+            var view = new BreakoutView();
+            WatchUi.pushView(view, new BreakoutDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_tictactoe) {
+            var view = new TicTacToeView();
+            WatchUi.pushView(view, new TicTacToeDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_simon) {
+            var view = new SimonView();
+            WatchUi.pushView(view, new SimonDelegate(view), WatchUi.SLIDE_LEFT);
         }
     }
 
