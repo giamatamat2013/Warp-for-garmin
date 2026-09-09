@@ -6,12 +6,13 @@ import Toybox.Math;
 
 class SimonView extends WatchUi.View {
 
+    private const HIGH_SCORE_KEY = "simon_high";
     private const STATE_SHOWING = 0;
     private const STATE_WAITING = 1;
     private const STATE_GAME_OVER = 2;
 
-    private const SHOW_ON_MS = 450;
-    private const SHOW_OFF_MS = 200;
+    private const BASE_SHOW_ON_MS = 450;
+    private const BASE_SHOW_OFF_MS = 200;
     private const TICK_MS = 30;
 
     private var _width as Number = 0;
@@ -29,9 +30,16 @@ class SimonView extends WatchUi.View {
     private var _inputIndex as Number = 0;
     private var _timer as Timer.Timer?;
 
+    private var _speedMultiplier as Float = 1.0;
+    private var _startLength as Number = 1;
+    private var _strikesAllowed as Number = 0;
+    private var _strikesUsed as Number = 0;
+    private var _highScore as Number = 0;
+
     function initialize() {
         View.initialize();
         _sequence = [];
+        _highScore = HighScores.get(HIGH_SCORE_KEY);
     }
 
     function onLayout(dc as Dc) as Void {
@@ -43,9 +51,25 @@ class SimonView extends WatchUi.View {
         resetGame();
     }
 
+    // startLength: how many steps the sequence begins with (harder skips the
+    // warm-up). strikesAllowed: wrong taps tolerated before game over.
+    function setDifficulty(startLength as Number, strikesAllowed as Number) as Void {
+        _startLength = startLength;
+        _strikesAllowed = strikesAllowed;
+    }
+
+    function setSpeedMultiplier(multiplier as Float) as Void {
+        _speedMultiplier = multiplier;
+    }
+
     function resetGame() as Void {
         _sequence = [];
-        addStep();
+        _strikesUsed = 0;
+        var i = 0;
+        while (i < _startLength) {
+            addStep();
+            i++;
+        }
         startShowing();
         WatchUi.requestUpdate();
     }
@@ -84,13 +108,13 @@ class SimonView extends WatchUi.View {
     private function updateShowing() as Void {
         _showElapsed += TICK_MS;
         if (_showingOn) {
-            if (_showElapsed >= SHOW_ON_MS) {
+            if (_showElapsed >= BASE_SHOW_ON_MS / _speedMultiplier) {
                 _showingOn = false;
                 _showElapsed = 0;
                 _activeQuadrant = -1;
             }
         } else {
-            if (_showElapsed >= SHOW_OFF_MS) {
+            if (_showElapsed >= BASE_SHOW_OFF_MS / _speedMultiplier) {
                 _showStep += 1;
                 if (_showStep >= _sequence.size()) {
                     _state = STATE_WAITING;
@@ -128,9 +152,17 @@ class SimonView extends WatchUi.View {
                 addStep();
                 startShowing();
             }
+        } else if (_strikesUsed < _strikesAllowed) {
+            // A tolerated mistake replays the same sequence rather than
+            // ending the game outright.
+            _strikesUsed += 1;
+            _activeQuadrant = -1;
+            startShowing();
         } else {
             _state = STATE_GAME_OVER;
             _activeQuadrant = -1;
+            HighScores.submit(HIGH_SCORE_KEY, _sequence.size() - 1);
+            _highScore = HighScores.get(HIGH_SCORE_KEY);
         }
         WatchUi.requestUpdate();
     }
@@ -148,8 +180,8 @@ class SimonView extends WatchUi.View {
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         var roundNum = _sequence.size() - 1;
-        var label = (_state == STATE_GAME_OVER) ? "Game Over  " + roundNum.toString() : "Score: " + roundNum.toString();
-        dc.drawText(_width / 2, 2, Graphics.FONT_TINY, label, Graphics.TEXT_JUSTIFY_CENTER);
+        var label = (_state == STATE_GAME_OVER) ? "Game Over  " + roundNum.toString() + "  Best:" + _highScore.toString() : "Score: " + roundNum.toString() + "  Best:" + _highScore.toString();
+        dc.drawText(_width / 2, 2, Graphics.FONT_XTINY, label, Graphics.TEXT_JUSTIFY_CENTER);
 
         var half = _boardSize / 2;
         var q = 0;

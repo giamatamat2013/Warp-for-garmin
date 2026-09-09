@@ -1,12 +1,19 @@
 import Toybox.Graphics;
 import Toybox.WatchUi;
 import Toybox.Lang;
+import Toybox.Math;
 
 class TicTacToeView extends WatchUi.View {
 
     private const EMPTY = 0;
     private const PLAYER = 1;
     private const AI = 2;
+
+    // AI strength: 0 = mostly random, 1 = win/block/center/corner
+    // heuristic, 2 = heuristic plus fork-blocking.
+    private const SKILL_EASY = 0;
+    private const SKILL_NORMAL = 1;
+    private const SKILL_HARD = 2;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -18,6 +25,7 @@ class TicTacToeView extends WatchUi.View {
     private var _winner as Number = EMPTY;
     private var _draw as Boolean = false;
     private var _winLines as Array<Array<Number> >;
+    private var _aiSkill as Number = SKILL_NORMAL;
 
     function initialize() {
         View.initialize();
@@ -44,6 +52,11 @@ class TicTacToeView extends WatchUi.View {
         boardSize = _cellSize * 3;
         _boardLeft = (_width - boardSize) / 2;
         _boardTop = (_height - boardSize) / 2;
+    }
+
+    function setDifficulty(skill as Number) as Void {
+        _aiSkill = skill;
+        resetGame();
     }
 
     function resetGame() as Void {
@@ -91,9 +104,20 @@ class TicTacToeView extends WatchUi.View {
     }
 
     private function aiMove() as Void {
+        if (_aiSkill == SKILL_EASY && (Math.rand() % 10).abs() < 7) {
+            var randomMove = pickRandomEmpty();
+            if (randomMove != -1) {
+                _cells[randomMove] = AI;
+                return;
+            }
+        }
+
         var move = findWinningMove(AI);
         if (move == -1) {
             move = findWinningMove(PLAYER);
+        }
+        if (move == -1 && _aiSkill == SKILL_HARD) {
+            move = findForkBlock();
         }
         if (move == -1 && _cells[4] == EMPTY) {
             move = 4;
@@ -124,6 +148,63 @@ class TicTacToeView extends WatchUi.View {
         if (move != -1) {
             _cells[move] = AI;
         }
+    }
+
+    private function pickRandomEmpty() as Number {
+        var empty = [] as Array<Number>;
+        var i = 0;
+        while (i < _cells.size()) {
+            if (_cells[i] == EMPTY) {
+                empty.add(i);
+            }
+            i++;
+        }
+        if (empty.size() == 0) {
+            return -1;
+        }
+        return empty[(Math.rand() % empty.size()).abs()];
+    }
+
+    // A cell that, if the player took it, would complete two lines at once
+    // (an unblockable fork) — the AI should occupy it first.
+    private function findForkBlock() as Number {
+        var i = 0;
+        while (i < _cells.size()) {
+            if (_cells[i] == EMPTY) {
+                var testCells = _cells.slice(0, null) as Array<Number>;
+                testCells[i] = PLAYER;
+                if (countTwoInLine(testCells, PLAYER) >= 2) {
+                    return i;
+                }
+            }
+            i++;
+        }
+        return -1;
+    }
+
+    private function countTwoInLine(cells as Array<Number>, player as Number) as Number {
+        var count = 0;
+        var i = 0;
+        while (i < _winLines.size()) {
+            var line = _winLines[i];
+            var playerCount = 0;
+            var emptyCount = 0;
+            var j = 0;
+            while (j < line.size()) {
+                var v = cells[line[j]];
+                if (v == player) {
+                    playerCount++;
+                } else if (v == EMPTY) {
+                    emptyCount++;
+                }
+                j++;
+            }
+            if (playerCount == 2 && emptyCount == 1) {
+                count++;
+            }
+            i++;
+        }
+        return count;
     }
 
     private function findWinningMove(player as Number) as Number {

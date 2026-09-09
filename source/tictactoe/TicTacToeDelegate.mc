@@ -17,7 +17,7 @@ class TicTacToeDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        _view.resetGame();
+        WatchUi.pushView(new Rez.Menus.TicTacToeMenu(), new TicTacToeMenuDelegate(_view), WatchUi.SLIDE_UP);
         return true;
     }
 

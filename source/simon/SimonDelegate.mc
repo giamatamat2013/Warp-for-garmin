@@ -17,7 +17,7 @@ class SimonDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        _view.resetGame();
+        WatchUi.pushView(new Rez.Menus.SimonMenu(), new SimonMenuDelegate(_view), WatchUi.SLIDE_UP);
         return true;
     }
 
