@@ -4,12 +4,19 @@
     <string id="game_pong">Pong</string>
     <string id="game_2048">2048</string>
 
+    <string id="menu_label_difficulty">Difficulty</string>
+    <string id="menu_label_very_easy">Very Easy</string>
     <string id="menu_label_easy">Easy</string>
     <string id="menu_label_normal">Normal</string>
     <string id="menu_label_hard">Hard</string>
+    <string id="menu_label_very_hard">Very Hard</string>
+
     <string id="menu_label_speed">Speed</string>
+    <string id="menu_label_speed_very_slow">Very Slow</string>
     <string id="menu_label_speed_slow">Slow</string>
     <string id="menu_label_speed_normal">Normal</string>
     <string id="menu_label_speed_fast">Fast</string>
+    <string id="menu_label_speed_very_fast">Very Fast</string>
+
     <string id="menu_label_reset">Reset Game</string>
 </strings>
