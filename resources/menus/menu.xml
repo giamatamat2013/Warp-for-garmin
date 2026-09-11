@@ -8,4 +8,6 @@
     <menu-item id="item_simon" label="@Strings.game_simon" />
     <menu-item id="item_dino" label="@Strings.game_dino" />
     <menu-item id="item_tetris" label="@Strings.game_tetris" />
+    <menu-item id="item_balanceball" label="@Strings.game_balanceball" />
+    <menu-item id="item_maze" label="@Strings.game_maze" />
 </menu2>

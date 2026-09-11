@@ -1,4 +1,8 @@
 bin/
+gen/
+external-mir/
+internal-mir/
 *.der
 *.prg
 *.iq
+*.debug.xml

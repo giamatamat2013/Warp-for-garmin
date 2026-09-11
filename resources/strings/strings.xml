@@ -10,6 +10,8 @@
     <string id="game_simon">Simon</string>
     <string id="game_dino">Dino Runner</string>
     <string id="game_tetris">Tetris</string>
+    <string id="game_balanceball">Balance Ball</string>
+    <string id="game_maze">Maze</string>
 
     <string id="menu_label_difficulty">Difficulty</string>
     <string id="menu_label_very_easy">Very Easy</string>

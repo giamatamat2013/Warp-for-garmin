@@ -41,6 +41,12 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
         } else if (id == :item_tetris) {
             var view = new TetrisView();
             WatchUi.pushView(view, new TetrisDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_balanceball) {
+            var view = new BalanceBallView();
+            WatchUi.pushView(view, new BalanceBallDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_maze) {
+            var view = new MazeView();
+            WatchUi.pushView(view, new MazeDelegate(view), WatchUi.SLIDE_LEFT);
         }
     }
 
