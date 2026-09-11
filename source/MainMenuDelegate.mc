@@ -47,6 +47,9 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
         } else if (id == :item_maze) {
             var view = new MazeView();
             WatchUi.pushView(view, new MazeDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_racing) {
+            var view = new RacingView();
+            WatchUi.pushView(view, new RacingDelegate(view), WatchUi.SLIDE_LEFT);
         }
     }
 
