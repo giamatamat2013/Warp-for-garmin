@@ -16,6 +16,8 @@
     <string id="game_draw">Draw</string>
 
     <string id="menu_label_difficulty">Difficulty</string>
+    <string id="menu_label_gap_size">Gap Size</string>
+    <string id="menu_label_pipe_spacing">Pipe Spacing</string>
     <string id="menu_label_very_easy">Very Easy</string>
     <string id="menu_label_easy">Easy</string>
     <string id="menu_label_normal">Normal</string>
@@ -30,6 +32,16 @@
     <string id="menu_label_speed_very_fast">Very Fast</string>
 
     <string id="menu_label_reset">Reset Game</string>
+    <string id="board_size_5x5">5x5</string>
+    <string id="board_size_4x4">4x4</string>
+    <string id="board_size_3x3">3x3</string>
+    <string id="board_size_custom">Custom...</string>
+    <string id="board_size_16x16">16x16</string>
+    <string id="board_size_14x14">14x14</string>
+    <string id="board_size_12x12">12x12</string>
+    <string id="board_size_10x10">10x10</string>
+    <string id="board_size_8x8">8x8</string>
+    <string id="menu_label_board_size">Board Size</string>
     <string id="menu_label_clear">Clear</string>
 
     <string id="tool_brush">Brush</string>

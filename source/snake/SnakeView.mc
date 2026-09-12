@@ -7,7 +7,7 @@ import Toybox.Math;
 class SnakeView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "snake_high";
-    private const BASE_TICK_MS = 160;
+    private const BASE_TICK_MS = 240;
     private const DIR_UP = 0;
     private const DIR_DOWN = 1;
     private const DIR_LEFT = 2;
@@ -53,12 +53,18 @@ class SnakeView extends WatchUi.View {
         _boardTop = (_height - boardSize) / 2;
     }
 
-    function setDifficulty(gridSize as Number) as Void {
+    function setBoardSize(gridSize as Number) as Void {
         _gridSize = gridSize;
         if (_width > 0) {
             layoutBoard();
         }
         resetGame();
+    }
+
+    // Callback target for NumberKeypadDelegate — see item_grid_custom in
+    // SnakeMenuDelegate.
+    function onCustomBoardSize(value as Number) as Void {
+        setBoardSize(value);
     }
 
     function setSpeedMultiplier(multiplier as Float) as Void {
@@ -190,8 +196,11 @@ class SnakeView extends WatchUi.View {
         var label = _gameOver ? "Game Over  " + _score.toString() + "  Best:" + _highScore.toString() : "Score: " + _score.toString() + "  Best:" + _highScore.toString();
         dc.drawText(_width / 2, 2, Graphics.FONT_XTINY, label, Graphics.TEXT_JUSTIFY_CENTER);
 
-        dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_RED);
-        dc.fillRectangle(_boardLeft + _food[1] * _cellSize, _boardTop + _food[0] * _cellSize, _cellSize, _cellSize);
+        var boardSize = _cellSize * _gridSize;
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.drawRectangle(_boardLeft, _boardTop, boardSize, boardSize);
+
+        drawApple(dc);
 
         dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_GREEN);
         var i = 0;
@@ -200,6 +209,61 @@ class SnakeView extends WatchUi.View {
             dc.fillRectangle(_boardLeft + seg[1] * _cellSize, _boardTop + seg[0] * _cellSize, _cellSize - 1, _cellSize - 1);
             i++;
         }
+
+        drawFace(dc);
+    }
+
+    // A round red apple with a small stem and leaf, instead of a plain square.
+    private function drawApple(dc as Dc) as Void {
+        var cx = _boardLeft + _food[1] * _cellSize + _cellSize / 2;
+        var cy = _boardTop + _food[0] * _cellSize + _cellSize / 2;
+        var r = _cellSize / 2;
+
+        dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_RED);
+        dc.fillCircle(cx, cy, r);
+        // A small light patch gives the apple a bit of shine/roundness.
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(cx - r / 3, cy - r / 3, (r / 4).toNumber() > 0 ? r / 4 : 1);
+
+        dc.setColor(Graphics.COLOR_DK_RED, Graphics.COLOR_TRANSPARENT);
+        dc.drawLine(cx, cy - r, cx, cy - r - 2);
+
+        dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_TRANSPARENT);
+        dc.fillPolygon([
+            [cx, cy - r - 1],
+            [cx + r / 2, cy - r - 2],
+            [cx + 1, cy - r]
+        ] as Array<[Numeric, Numeric]>);
+    }
+
+    // A pair of eyes on the head cell, shifted toward whichever direction
+    // the snake is currently moving so it visibly "looks" that way.
+    private function drawFace(dc as Dc) as Void {
+        var head = _body[_body.size() - 1];
+        var cx = _boardLeft + head[1] * _cellSize + _cellSize / 2;
+        var cy = _boardTop + head[0] * _cellSize + _cellSize / 2;
+        var forward = _cellSize / 4;
+        var side = _cellSize / 4;
+        var eye1x = cx;
+        var eye1y = cy;
+        var eye2x = cx;
+        var eye2y = cy;
+        if (_direction == DIR_RIGHT) {
+            eye1x = cx + forward; eye1y = cy - side;
+            eye2x = cx + forward; eye2y = cy + side;
+        } else if (_direction == DIR_LEFT) {
+            eye1x = cx - forward; eye1y = cy - side;
+            eye2x = cx - forward; eye2y = cy + side;
+        } else if (_direction == DIR_UP) {
+            eye1x = cx - side; eye1y = cy - forward;
+            eye2x = cx + side; eye2y = cy - forward;
+        } else {
+            eye1x = cx - side; eye1y = cy + forward;
+            eye2x = cx + side; eye2y = cy + forward;
+        }
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(eye1x, eye1y, 1);
+        dc.fillCircle(eye2x, eye2y, 1);
     }
 
 }

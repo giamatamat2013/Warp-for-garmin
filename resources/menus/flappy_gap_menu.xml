@@ -1,0 +1,7 @@
+<menu id="FlappyGapMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <menu-item id="item_gap_very_easy" label="@Strings.menu_label_very_easy" />
+    <menu-item id="item_gap_easy" label="@Strings.menu_label_easy" />
+    <menu-item id="item_gap_normal" label="@Strings.menu_label_normal" />
+    <menu-item id="item_gap_hard" label="@Strings.menu_label_hard" />
+    <menu-item id="item_gap_very_hard" label="@Strings.menu_label_very_hard" />
+</menu>

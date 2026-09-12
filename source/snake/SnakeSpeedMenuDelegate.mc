@@ -11,16 +11,18 @@ class SnakeSpeedMenuDelegate extends WatchUi.MenuInputDelegate {
     }
 
     function onMenuItem(item as Symbol) as Void {
+        // Scaled down from before (paired with a raised BASE_TICK_MS in
+        // SnakeView) so every speed setting is much slower overall.
         if (item == :item_speed_very_slow) {
-            _view.setSpeedMultiplier(0.6);
+            _view.setSpeedMultiplier(0.4);
         } else if (item == :item_speed_slow) {
-            _view.setSpeedMultiplier(0.8);
+            _view.setSpeedMultiplier(0.55);
         } else if (item == :item_speed_normal) {
-            _view.setSpeedMultiplier(1.0);
+            _view.setSpeedMultiplier(0.7);
         } else if (item == :item_speed_fast) {
-            _view.setSpeedMultiplier(1.3);
+            _view.setSpeedMultiplier(0.9);
         } else if (item == :item_speed_very_fast) {
-            _view.setSpeedMultiplier(1.6);
+            _view.setSpeedMultiplier(1.1);
         }
     }
 

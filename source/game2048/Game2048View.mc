@@ -95,10 +95,16 @@ class Game2048View extends WatchUi.View {
         }
     }
 
-    // Changing grid size starts a fresh board since existing tiles don't
+    // Changing board size starts a fresh board since existing tiles don't
     // map onto a different-sized grid.
-    function setDifficulty(gridSize as Number) as Void {
+    function setBoardSize(gridSize as Number) as Void {
         startNewGame(gridSize);
+    }
+
+    // Callback target for NumberKeypadDelegate — see item_grid_custom in
+    // Game2048MenuDelegate.
+    function onCustomBoardSize(value as Number) as Void {
+        setBoardSize(value);
     }
 
     private function startNewGame(gridSize as Number) as Void {

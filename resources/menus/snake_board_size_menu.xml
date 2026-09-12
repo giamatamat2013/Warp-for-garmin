@@ -1,0 +1,8 @@
+<menu id="SnakeBoardSizeMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <menu-item id="item_grid_16" label="@Strings.board_size_16x16" />
+    <menu-item id="item_grid_14" label="@Strings.board_size_14x14" />
+    <menu-item id="item_grid_12" label="@Strings.board_size_12x12" />
+    <menu-item id="item_grid_10" label="@Strings.board_size_10x10" />
+    <menu-item id="item_grid_8" label="@Strings.board_size_8x8" />
+    <menu-item id="item_grid_custom" label="@Strings.board_size_custom" />
+</menu>

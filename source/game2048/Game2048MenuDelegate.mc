@@ -12,11 +12,14 @@ class Game2048MenuDelegate extends WatchUi.MenuInputDelegate {
 
     function onMenuItem(item as Symbol) as Void {
         if (item == :item_grid_5) {
-            _view.setDifficulty(5);
+            _view.setBoardSize(5);
         } else if (item == :item_grid_4) {
-            _view.setDifficulty(4);
+            _view.setBoardSize(4);
         } else if (item == :item_grid_3) {
-            _view.setDifficulty(3);
+            _view.setBoardSize(3);
+        } else if (item == :item_grid_custom) {
+            var keypad = new NumberKeypadView("Board Size", 3, 8, 4);
+            WatchUi.pushView(keypad, new NumberKeypadDelegate(keypad, _view.method(:onCustomBoardSize)), WatchUi.SLIDE_UP);
         } else if (item == :item_reset) {
             _view.resetGame();
         }

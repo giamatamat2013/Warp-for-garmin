@@ -13,7 +13,7 @@ class FlappyView extends WatchUi.View {
     private const FLAP_VELOCITY = -6.0;
     private const BIRD_RADIUS = 7;
     private const PIPE_WIDTH = 16;
-    private const PIPE_SPACING = 120;
+    private const BASE_PIPE_SPACING = 120;
     private const BASE_PIPE_SPEED = 2.5;
 
     private var _width as Number = 0;
@@ -30,6 +30,7 @@ class FlappyView extends WatchUi.View {
     private var _gapHeight as Float = 70.0;
     private var _gapMultiplier as Float = 1.0;
     private var _speedMultiplier as Float = 1.0;
+    private var _spacingMultiplier as Float = 1.0;
 
     private var _pipeX as Array<Float>;
     private var _pipeGapY as Array<Float>;
@@ -62,13 +63,21 @@ class FlappyView extends WatchUi.View {
         resetGame();
     }
 
-    function setDifficulty(gapMultiplier as Float) as Void {
+    function setGapMultiplier(gapMultiplier as Float) as Void {
         _gapMultiplier = gapMultiplier;
         _gapHeight = _baseGapHeight * _gapMultiplier;
     }
 
+    function setSpacingMultiplier(spacingMultiplier as Float) as Void {
+        _spacingMultiplier = spacingMultiplier;
+    }
+
     function setSpeedMultiplier(multiplier as Float) as Void {
         _speedMultiplier = multiplier;
+    }
+
+    private function pipeSpacing() as Number {
+        return (BASE_PIPE_SPACING * _spacingMultiplier).toNumber();
     }
 
     // Half the vertical space available at horizontal position x, accounting
@@ -163,7 +172,7 @@ class FlappyView extends WatchUi.View {
         }
 
         // Spawn a new pipe once the last one has cleared enough space.
-        if (_pipeX.size() == 0 || _pipeX[_pipeX.size() - 1] <= _width - PIPE_SPACING) {
+        if (_pipeX.size() == 0 || _pipeX[_pipeX.size() - 1] <= _width - pipeSpacing()) {
             spawnPipe(_width.toFloat() + PIPE_WIDTH);
         }
 
@@ -200,6 +209,39 @@ class FlappyView extends WatchUi.View {
         _pipePassed = keptPassed;
     }
 
+    // Small composite sprite instead of a plain circle: an oval body, a
+    // beak pointing the direction of travel, an eye, and a wing that flaps
+    // up on a rising flap and trails down while falling.
+    private function drawBird(dc as Dc) as Void {
+        var x = _birdX.toNumber();
+        var y = _birdY.toNumber();
+        var r = BIRD_RADIUS;
+
+        dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(x, y, r);
+
+        var wingUp = _birdVelY < 0;
+        var wingY = wingUp ? y - r / 2 : y + r / 3;
+        dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
+        dc.fillPolygon([
+            [x - r / 2, y],
+            [x + r / 4, wingY],
+            [x - r, y + r / 3]
+        ] as Array<[Numeric, Numeric]>);
+
+        dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
+        dc.fillPolygon([
+            [x + r - 1, y - r / 3],
+            [x + r - 1, y + r / 3],
+            [x + r + r / 2, y]
+        ] as Array<[Numeric, Numeric]>);
+
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(x + r / 3, y - r / 2, r / 3);
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(x + r / 3 + 1, y - r / 2, r / 6);
+    }
+
     function onUpdate(dc as Dc) as Void {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
@@ -219,8 +261,7 @@ class FlappyView extends WatchUi.View {
             i++;
         }
 
-        dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(_birdX.toNumber(), _birdY.toNumber(), BIRD_RADIUS);
+        drawBird(dc);
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         if (_gameOver) {

@@ -11,8 +11,8 @@ class SnakeMenuDelegate extends WatchUi.MenuInputDelegate {
     }
 
     function onMenuItem(item as Symbol) as Void {
-        if (item == :item_difficulty) {
-            WatchUi.pushView(new Rez.Menus.SnakeDifficultyMenu(), new SnakeDifficultyMenuDelegate(_view), WatchUi.SLIDE_UP);
+        if (item == :item_board_size) {
+            WatchUi.pushView(new Rez.Menus.SnakeBoardSizeMenu(), new SnakeBoardSizeMenuDelegate(_view), WatchUi.SLIDE_UP);
         } else if (item == :item_speed) {
             WatchUi.pushView(new Rez.Menus.SnakeSpeedMenu(), new SnakeSpeedMenuDelegate(_view), WatchUi.SLIDE_UP);
         } else if (item == :item_reset) {
