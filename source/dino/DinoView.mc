@@ -35,6 +35,7 @@ class DinoView extends WatchUi.View {
     private var _obstaclePassed as Array<Boolean>;
     private var _spawnCooldown as Number = 0;
     private var _spawnGapMultiplier as Float = 1.0;
+    private var _heightMultiplier as Float = 1.0;
     private var _speedMultiplier as Float = 1.0;
 
     private var _speed as Float = BASE_SPEED;
@@ -51,8 +52,12 @@ class DinoView extends WatchUi.View {
         _highScore = HighScores.get(HIGH_SCORE_KEY);
     }
 
-    function setDifficulty(spawnGapMultiplier as Float) as Void {
+    function setSpawnFrequency(spawnGapMultiplier as Float) as Void {
         _spawnGapMultiplier = spawnGapMultiplier;
+    }
+
+    function setCactusHeight(heightMultiplier as Float) as Void {
+        _heightMultiplier = heightMultiplier;
     }
 
     function setSpeedMultiplier(multiplier as Float) as Void {
@@ -136,7 +141,12 @@ class DinoView extends WatchUi.View {
     }
 
     private function spawnObstacle() as Void {
-        var height = OBSTACLE_MIN_HEIGHT + (Math.rand() % (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT)).abs();
+        var minH = (OBSTACLE_MIN_HEIGHT * _heightMultiplier).toNumber();
+        var maxH = (OBSTACLE_MAX_HEIGHT * _heightMultiplier).toNumber();
+        if (maxH <= minH) {
+            maxH = minH + 1;
+        }
+        var height = minH + (Math.rand() % (maxH - minH)).abs();
         _obstacleX.add(_width.toFloat() + 20.0);
         _obstacleHeight.add(height);
         _obstaclePassed.add(false);
@@ -196,6 +206,54 @@ class DinoView extends WatchUi.View {
         _obstaclePassed = keptPassed;
     }
 
+    // A small T-rex silhouette instead of a plain square: body, head with an
+    // eye, a stubby arm, a running leg, and a tail trailing behind.
+    private function drawDino(dc as Dc) as Void {
+        var x = _dinoX.toNumber();
+        var y = _dinoY.toNumber();
+        var s = DINO_SIZE;
+
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_WHITE);
+        // Body/torso.
+        dc.fillRectangle(x + s / 4, y + s / 3, s * 3 / 4, s * 2 / 3);
+        // Head, sitting a bit above and ahead of the torso.
+        dc.fillRectangle(x + s / 2, y, s / 2, s / 2);
+        // Tail trailing off the back.
+        dc.fillPolygon([
+            [x + s / 4, y + s / 2],
+            [x, y + s / 2 - 2],
+            [x + s / 4, y + s / 2 + 3]
+        ] as Array<[Numeric, Numeric]>);
+        // Leg.
+        dc.fillRectangle(x + s / 2, y + s, s / 4, s / 4);
+
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(x + s * 7 / 8, y + s / 5, 1);
+    }
+
+    // A saguaro-style cactus: a central trunk with two arms, instead of a
+    // plain green rectangle.
+    private function drawCactus(dc as Dc, ox as Number, topY as Number, oh as Number) as Void {
+        dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_GREEN);
+        var trunkW = OBSTACLE_WIDTH / 2;
+        var trunkX = ox + (OBSTACLE_WIDTH - trunkW) / 2;
+        dc.fillRectangle(trunkX, topY, trunkW, oh);
+
+        var armY = topY + oh / 3;
+        var armH = oh / 3;
+        var armW = OBSTACLE_WIDTH / 4;
+        if (armW < 2) {
+            armW = 2;
+        }
+        // Left arm: sticks out then turns upward.
+        dc.fillRectangle(ox, armY + armH / 2, trunkX - ox, armW);
+        dc.fillRectangle(ox, armY - armH / 2, armW, armH);
+        // Right arm, mirrored.
+        var rightArmX = trunkX + trunkW;
+        dc.fillRectangle(rightArmX, armY + armH / 2, ox + OBSTACLE_WIDTH - rightArmX, armW);
+        dc.fillRectangle(ox + OBSTACLE_WIDTH - armW, armY - armH / 2, armW, armH);
+    }
+
     function onUpdate(dc as Dc) as Void {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
@@ -203,17 +261,15 @@ class DinoView extends WatchUi.View {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.drawLine(0, _groundY.toNumber(), _width, _groundY.toNumber());
 
-        dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_GREEN);
         var i = 0;
         while (i < _obstacleX.size()) {
             var ox = _obstacleX[i].toNumber();
             var oh = _obstacleHeight[i];
-            dc.fillRectangle(ox, (_groundY - oh).toNumber(), OBSTACLE_WIDTH, oh);
+            drawCactus(dc, ox, (_groundY - oh).toNumber(), oh);
             i++;
         }
 
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_WHITE);
-        dc.fillRectangle(_dinoX.toNumber(), _dinoY.toNumber(), DINO_SIZE, DINO_SIZE);
+        drawDino(dc);
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         if (_gameOver) {

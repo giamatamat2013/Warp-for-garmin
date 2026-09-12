@@ -42,6 +42,8 @@
     <string id="board_size_10x10">10x10</string>
     <string id="board_size_8x8">8x8</string>
     <string id="menu_label_board_size">Board Size</string>
+    <string id="menu_label_cactus_height">Cactus Height</string>
+    <string id="menu_label_cactus_frequency">Cactus Frequency</string>
     <string id="menu_label_clear">Clear</string>
 
     <string id="tool_brush">Brush</string>
