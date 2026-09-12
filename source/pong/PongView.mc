@@ -33,6 +33,11 @@ class PongView extends WatchUi.View {
     private var _aiMissActive as Boolean = false;
     private var _aiFleeTarget as Float = 0.0;
     private var _aiHeadingToAi as Boolean = false;
+    // Turbo: 3x ball speed while START is held, reverting the instant it's
+    // released. Only scales the ball's per-tick movement, not the stored
+    // velocity, so paddle-deflection math (which reads that velocity's
+    // magnitude) is unaffected and speed returns to normal cleanly on release.
+    private var _boostActive as Boolean = false;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -137,6 +142,10 @@ class PongView extends WatchUi.View {
         _speedMultiplier = multiplier;
     }
 
+    function setBoostActive(active as Boolean) as Void {
+        _boostActive = active;
+    }
+
     function setPlayerY(y as Number) as Void {
         _playerY = clampToPlayfield(y.toFloat(), _playerX);
     }
@@ -185,8 +194,9 @@ class PongView extends WatchUi.View {
     private function updateGame() as Void {
         var half = PADDLE_HEIGHT / 2.0;
 
-        _ballX += _ballVelX;
-        _ballY += _ballVelY;
+        var boost = _boostActive ? 3.0 : 1.0;
+        _ballX += _ballVelX * boost;
+        _ballY += _ballVelY * boost;
 
         var ballRange = verticalHalfRangeAt(_ballX);
         var ballTop = _centerY - ballRange;

@@ -18,6 +18,18 @@ class BreakoutDelegate extends WatchUi.BehaviorDelegate {
         } else if (key == WatchUi.KEY_RIGHT || key == WatchUi.KEY_DOWN) {
             _view.movePaddle(14.0);
             return true;
+        } else if (key == WatchUi.KEY_ENTER || key == WatchUi.KEY_START) {
+            _view.setBoostActive(true);
+            return true;
+        }
+        return false;
+    }
+
+    function onKeyReleased(keyEvent as WatchUi.KeyEvent) as Boolean {
+        var key = keyEvent.getKey();
+        if (key == WatchUi.KEY_ENTER || key == WatchUi.KEY_START) {
+            _view.setBoostActive(false);
+            return true;
         }
         return false;
     }

@@ -36,6 +36,14 @@ class BreakoutView extends WatchUi.View {
     private var _lives as Number = 3;
     private var _gameOver as Boolean = false;
     private var _won as Boolean = false;
+    // Ticks spent showing the Game Over/You Win screen before auto-starting
+    // a fresh game; at the 25ms tick rate this is ~2 seconds.
+    private const END_SCREEN_TICKS = 80;
+    private var _endScreenTicks as Number = 0;
+    // Turbo: 3x ball speed while START is held, reverting the instant it's
+    // released. Only scales per-tick movement, not the stored velocity, so
+    // paddle-deflection math is unaffected and speed snaps back on release.
+    private var _boostActive as Boolean = false;
     private var _timer as Timer.Timer?;
 
     function initialize() {
@@ -65,6 +73,10 @@ class BreakoutView extends WatchUi.View {
         _speedMultiplier = multiplier;
     }
 
+    function setBoostActive(active as Boolean) as Void {
+        _boostActive = active;
+    }
+
     function resetGame() as Void {
         _bricks = [];
         var r = 0;
@@ -83,6 +95,7 @@ class BreakoutView extends WatchUi.View {
         _lives = 3;
         _gameOver = false;
         _won = false;
+        _endScreenTicks = 0;
         resetBall();
         WatchUi.requestUpdate();
     }
@@ -129,15 +142,21 @@ class BreakoutView extends WatchUi.View {
     }
 
     function onTimerTick() as Void {
-        if (!_gameOver && !_won) {
+        if (_gameOver || _won) {
+            _endScreenTicks += 1;
+            if (_endScreenTicks >= END_SCREEN_TICKS) {
+                resetGame();
+            }
+        } else {
             updateGame();
         }
         WatchUi.requestUpdate();
     }
 
     private function updateGame() as Void {
-        _ballX += _ballVelX;
-        _ballY += _ballVelY;
+        var boost = _boostActive ? 3.0 : 1.0;
+        _ballX += _ballVelX * boost;
+        _ballY += _ballVelY * boost;
 
         if (_ballX - BALL_RADIUS <= _boardLeft) {
             _ballX = (_boardLeft + BALL_RADIUS).toFloat();
