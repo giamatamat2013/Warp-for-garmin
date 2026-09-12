@@ -10,13 +10,14 @@ import Toybox.Lang;
 class RacingView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "racing_high";
-    private const LANES = 3;
+    private const DEFAULT_LANES = 3;
     private const CAR_WIDTH = 16;
     private const CAR_HEIGHT = 20;
     private const LANE_EASE = 0.4;
     private const BASE_SPEED = 2.5;
     private const BASE_MAX_SPEED = 6.5;
 
+    private var _lanes as Number = DEFAULT_LANES;
     private var _width as Number = 0;
     private var _height as Number = 0;
     private var _roadLeft as Float = 0.0;
@@ -60,12 +61,24 @@ class RacingView extends WatchUi.View {
     function onLayout(dc as Dc) as Void {
         _width = dc.getWidth();
         _height = dc.getHeight();
+        layoutRoad();
+        resetGame();
+    }
+
+    private function layoutRoad() as Void {
         var roadWidth = _width * 0.62;
         _roadLeft = (_width - roadWidth) / 2.0;
-        _laneWidth = roadWidth / LANES;
+        _laneWidth = roadWidth / _lanes;
         _roadTop = 18.0;
         _roadBottom = _height - 6.0;
         _playerY = _roadBottom - CAR_HEIGHT - 4.0;
+    }
+
+    function setLaneCount(lanes as Number) as Void {
+        _lanes = lanes;
+        if (_width > 0) {
+            layoutRoad();
+        }
         resetGame();
     }
 
@@ -95,8 +108,8 @@ class RacingView extends WatchUi.View {
         _laneIndex += dir;
         if (_laneIndex < 0) {
             _laneIndex = 0;
-        } else if (_laneIndex >= LANES) {
-            _laneIndex = LANES - 1;
+        } else if (_laneIndex >= _lanes) {
+            _laneIndex = _lanes - 1;
         }
     }
 
@@ -126,7 +139,7 @@ class RacingView extends WatchUi.View {
     }
 
     private function spawnBot() as Void {
-        _botLane.add((Math.rand() % LANES).abs());
+        _botLane.add((Math.rand() % _lanes).abs());
         _botY.add(_roadTop - CAR_HEIGHT);
         _botPassed.add(false);
         _spawnCooldown = ((40 + (Math.rand() % 40).abs()) * _spawnGapMultiplier).toNumber();
@@ -183,13 +196,13 @@ class RacingView extends WatchUi.View {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
 
-        var roadWidth = _laneWidth * LANES;
+        var roadWidth = _laneWidth * _lanes;
         dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_DK_GRAY);
         dc.fillRectangle(_roadLeft, _roadTop, roadWidth, _roadBottom - _roadTop);
 
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         var lane;
-        for (lane = 1; lane < LANES; lane++) {
+        for (lane = 1; lane < _lanes; lane++) {
             var x = (_roadLeft + _laneWidth * lane).toNumber();
             dc.drawLine(x, _roadTop.toNumber(), x, _roadBottom.toNumber());
         }

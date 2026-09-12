@@ -15,6 +15,8 @@ class RacingMenuDelegate extends WatchUi.MenuInputDelegate {
             WatchUi.pushView(new Rez.Menus.RacingDifficultyMenu(), new RacingDifficultyMenuDelegate(_view), WatchUi.SLIDE_UP);
         } else if (item == :item_speed) {
             WatchUi.pushView(new Rez.Menus.RacingSpeedMenu(), new RacingSpeedMenuDelegate(_view), WatchUi.SLIDE_UP);
+        } else if (item == :item_lanes) {
+            WatchUi.pushView(new Rez.Menus.RacingLanesMenu(), new RacingLanesMenuDelegate(_view), WatchUi.SLIDE_UP);
         } else if (item == :item_reset) {
             _view.resetGame();
         }

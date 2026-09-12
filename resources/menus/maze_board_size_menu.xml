@@ -1,0 +1,7 @@
+<menu id="MazeBoardSizeMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <menu-item id="item_grid_7" label="@Strings.board_size_7x7" />
+    <menu-item id="item_grid_9" label="@Strings.board_size_9x9" />
+    <menu-item id="item_grid_11" label="@Strings.board_size_11x11" />
+    <menu-item id="item_grid_13" label="@Strings.board_size_13x13" />
+    <menu-item id="item_grid_custom" label="@Strings.board_size_custom" />
+</menu>

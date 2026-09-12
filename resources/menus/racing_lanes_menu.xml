@@ -1,0 +1,6 @@
+<menu id="RacingLanesMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <menu-item id="item_lanes_2" label="@Strings.lanes_2" />
+    <menu-item id="item_lanes_3" label="@Strings.lanes_3" />
+    <menu-item id="item_lanes_4" label="@Strings.lanes_4" />
+    <menu-item id="item_lanes_5" label="@Strings.lanes_5" />
+</menu>

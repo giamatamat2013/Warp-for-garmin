@@ -44,6 +44,20 @@
     <string id="menu_label_board_size">Board Size</string>
     <string id="menu_label_cactus_height">Cactus Height</string>
     <string id="menu_label_cactus_frequency">Cactus Frequency</string>
+    <string id="board_size_7">7 Cols</string>
+    <string id="board_size_9">9 Cols</string>
+    <string id="board_size_11">11 Cols</string>
+    <string id="board_size_13">13 Cols</string>
+    <string id="board_size_7x7">7x7</string>
+    <string id="board_size_9x9">9x9</string>
+    <string id="board_size_11x11">11x11</string>
+    <string id="board_size_13x13">13x13</string>
+    <string id="menu_label_new_maze">New Maze</string>
+    <string id="menu_label_lanes">Lanes</string>
+    <string id="lanes_2">2 Lanes</string>
+    <string id="lanes_3">3 Lanes</string>
+    <string id="lanes_4">4 Lanes</string>
+    <string id="lanes_5">5 Lanes</string>
     <string id="menu_label_clear">Clear</string>
 
     <string id="tool_brush">Brush</string>

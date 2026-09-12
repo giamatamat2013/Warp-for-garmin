@@ -1,4 +1,4 @@
-<menu id="BalanceBallDifficultyMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+<menu id="BalanceBallLevelMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
     <menu-item id="item_difficulty_very_easy" label="@Strings.menu_label_very_easy" />
     <menu-item id="item_difficulty_easy" label="@Strings.menu_label_easy" />
     <menu-item id="item_difficulty_normal" label="@Strings.menu_label_normal" />

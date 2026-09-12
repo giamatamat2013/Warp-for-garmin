@@ -12,7 +12,7 @@ import Toybox.Math;
 // walls the way a real ball would.
 class MazeView extends WatchUi.View {
 
-    private const GRID_SIZE = 9;
+    private const DEFAULT_GRID_SIZE = 9;
     private const BASE_TICK_MS = 50;
     private const TILT_ACCEL = 900.0; // px/s^2 at full tilt deflection
     private const DAMPING = 0.985;
@@ -20,6 +20,7 @@ class MazeView extends WatchUi.View {
     // which is what keeps the per-axis wall walk in moveX/moveY correct.
     private const MAX_SPEED = 350.0; // px/s
 
+    private var _gridSize as Number = DEFAULT_GRID_SIZE;
     private var _width as Number = 0;
     private var _height as Number = 0;
     private var _boardLeft as Float = 0.0;
@@ -60,18 +61,32 @@ class MazeView extends WatchUi.View {
 
     private function layoutBoard() as Void {
         var boardSize = BoardMetrics.squareBoardSize(_width, _height, 16);
-        _cellSize = boardSize / GRID_SIZE.toFloat();
+        _cellSize = boardSize / _gridSize.toFloat();
         _boardLeft = (_width - boardSize) / 2.0;
         _boardTop = (_height - boardSize) / 2.0;
         _ballRadius = _cellSize * 0.28;
+    }
+
+    function setBoardSize(gridSize as Number) as Void {
+        _gridSize = gridSize;
+        if (_width > 0) {
+            layoutBoard();
+        }
+        resetGame();
+    }
+
+    // Callback target for NumberKeypadDelegate — see item_grid_custom in
+    // MazeBoardSizeMenuDelegate.
+    function onCustomBoardSize(value as Number) as Void {
+        setBoardSize(value);
     }
 
     function resetGame() as Void {
         generateMaze();
         _ballX = _boardLeft + _cellSize / 2.0;
         _ballY = _boardTop + _cellSize / 2.0;
-        _goalX = _boardLeft + (GRID_SIZE - 0.5) * _cellSize;
-        _goalY = _boardTop + (GRID_SIZE - 0.5) * _cellSize;
+        _goalX = _boardLeft + (_gridSize - 0.5) * _cellSize;
+        _goalY = _boardTop + (_gridSize - 0.5) * _cellSize;
         _vx = 0.0;
         _vy = 0.0;
         _solved = false;
@@ -91,14 +106,14 @@ class MazeView extends WatchUi.View {
     private function generateMaze() as Void {
         var r;
         var c;
-        _wallRight = new Array<Array<Boolean> >[GRID_SIZE];
-        _wallDown = new Array<Array<Boolean> >[GRID_SIZE];
-        var visited = new Array<Array<Boolean> >[GRID_SIZE];
-        for (r = 0; r < GRID_SIZE; r++) {
-            _wallRight[r] = new Array<Boolean>[GRID_SIZE];
-            _wallDown[r] = new Array<Boolean>[GRID_SIZE];
-            visited[r] = new Array<Boolean>[GRID_SIZE];
-            for (c = 0; c < GRID_SIZE; c++) {
+        _wallRight = new Array<Array<Boolean> >[_gridSize];
+        _wallDown = new Array<Array<Boolean> >[_gridSize];
+        var visited = new Array<Array<Boolean> >[_gridSize];
+        for (r = 0; r < _gridSize; r++) {
+            _wallRight[r] = new Array<Boolean>[_gridSize];
+            _wallDown[r] = new Array<Boolean>[_gridSize];
+            visited[r] = new Array<Boolean>[_gridSize];
+            for (c = 0; c < _gridSize; c++) {
                 _wallRight[r][c] = true;
                 _wallDown[r][c] = true;
                 visited[r][c] = false;
@@ -113,9 +128,9 @@ class MazeView extends WatchUi.View {
             var cc = cur[1];
             var neighbors = [] as Array<Array<Number> >;
             if (cr > 0 && !visited[cr - 1][cc]) { neighbors.add([cr - 1, cc, 0]); }
-            if (cr < GRID_SIZE - 1 && !visited[cr + 1][cc]) { neighbors.add([cr + 1, cc, 1]); }
+            if (cr < _gridSize - 1 && !visited[cr + 1][cc]) { neighbors.add([cr + 1, cc, 1]); }
             if (cc > 0 && !visited[cr][cc - 1]) { neighbors.add([cr, cc - 1, 2]); }
-            if (cc < GRID_SIZE - 1 && !visited[cr][cc + 1]) { neighbors.add([cr, cc + 1, 3]); }
+            if (cc < _gridSize - 1 && !visited[cr][cc + 1]) { neighbors.add([cr, cc + 1, 3]); }
 
             if (neighbors.size() == 0) {
                 stack = stack.slice(0, stack.size() - 1) as Array<Array<Number> >;
@@ -229,14 +244,14 @@ class MazeView extends WatchUi.View {
         }
         var row = ((_ballY - _boardTop) / _cellSize).toNumber();
         if (row < 0) { row = 0; }
-        if (row >= GRID_SIZE) { row = GRID_SIZE - 1; }
+        if (row >= _gridSize) { row = _gridSize - 1; }
 
         var newX = _ballX + dx;
         var col = ((_ballX - _boardLeft) / _cellSize).toNumber();
         var c;
         if (dx > 0) {
             var targetCol = ((newX + _ballRadius - _boardLeft) / _cellSize).toNumber();
-            for (c = col; c <= targetCol && c < GRID_SIZE; c++) {
+            for (c = col; c <= targetCol && c < _gridSize; c++) {
                 var wallX = _boardLeft + (c + 1) * _cellSize;
                 if (_wallRight[row][c] && newX + _ballRadius > wallX) {
                     newX = wallX - _ballRadius;
@@ -265,14 +280,14 @@ class MazeView extends WatchUi.View {
         }
         var col = ((_ballX - _boardLeft) / _cellSize).toNumber();
         if (col < 0) { col = 0; }
-        if (col >= GRID_SIZE) { col = GRID_SIZE - 1; }
+        if (col >= _gridSize) { col = _gridSize - 1; }
 
         var newY = _ballY + dy;
         var row = ((_ballY - _boardTop) / _cellSize).toNumber();
         var r;
         if (dy > 0) {
             var targetRow = ((newY + _ballRadius - _boardTop) / _cellSize).toNumber();
-            for (r = row; r <= targetRow && r < GRID_SIZE; r++) {
+            for (r = row; r <= targetRow && r < _gridSize; r++) {
                 var wallY = _boardTop + (r + 1) * _cellSize;
                 if (_wallDown[r][col] && newY + _ballRadius > wallY) {
                     newY = wallY - _ballRadius;
@@ -306,8 +321,8 @@ class MazeView extends WatchUi.View {
         dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
         var r;
         var c;
-        for (r = 0; r < GRID_SIZE; r++) {
-            for (c = 0; c < GRID_SIZE; c++) {
+        for (r = 0; r < _gridSize; r++) {
+            for (c = 0; c < _gridSize; c++) {
                 var x = _boardLeft + c * _cellSize;
                 var y = _boardTop + r * _cellSize;
                 if (_wallRight[r][c]) {
@@ -318,10 +333,10 @@ class MazeView extends WatchUi.View {
                 }
             }
         }
-        dc.drawRectangle(_boardLeft, _boardTop, _cellSize * GRID_SIZE, _cellSize * GRID_SIZE);
+        dc.drawRectangle(_boardLeft, _boardTop, _cellSize * _gridSize, _cellSize * _gridSize);
 
         dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_GREEN);
-        dc.fillRectangle(_boardLeft + (GRID_SIZE - 1) * _cellSize + 2, _boardTop + (GRID_SIZE - 1) * _cellSize + 2, _cellSize - 3, _cellSize - 3);
+        dc.fillRectangle(_boardLeft + (_gridSize - 1) * _cellSize + 2, _boardTop + (_gridSize - 1) * _cellSize + 2, _cellSize - 3, _cellSize - 3);
 
         dc.setColor(Graphics.COLOR_BLUE, Graphics.COLOR_BLUE);
         dc.fillCircle(_ballX, _ballY, _ballRadius);

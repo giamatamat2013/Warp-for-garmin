@@ -16,8 +16,8 @@ class BalanceBallView extends WatchUi.View {
     private const TILT_ACCEL = 900.0; // px/s^2 at full tilt deflection
     private const DAMPING = 0.985;
 
-    private var _boundaryFraction as Float = 0.72;
-    private var _speedMultiplier as Float = 1.0;
+    private var _boundaryFraction as Float = 0.85;
+    private var _speedMultiplier as Float = 0.55;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -61,16 +61,16 @@ class BalanceBallView extends WatchUi.View {
         _boundaryRadius = minDim / 2.0 * _boundaryFraction;
     }
 
-    function setDifficulty(boundaryFraction as Float) as Void {
+    // Difficulty and speed used to be two separate menus, but a bigger
+    // boundary (easier) with twitchy tilt response (harder) fought each
+    // other, so one combined level now sets both together consistently.
+    function setLevel(boundaryFraction as Float, speedMultiplier as Float) as Void {
         _boundaryFraction = boundaryFraction;
+        _speedMultiplier = speedMultiplier;
         if (_width > 0) {
             layoutBoundary();
         }
         resetGame();
-    }
-
-    function setSpeedMultiplier(multiplier as Float) as Void {
-        _speedMultiplier = multiplier;
     }
 
     function resetGame() as Void {

@@ -11,8 +11,8 @@ class TetrisMenuDelegate extends WatchUi.MenuInputDelegate {
     }
 
     function onMenuItem(item as Symbol) as Void {
-        if (item == :item_difficulty) {
-            WatchUi.pushView(new Rez.Menus.TetrisDifficultyMenu(), new TetrisDifficultyMenuDelegate(_view), WatchUi.SLIDE_UP);
+        if (item == :item_board_size) {
+            WatchUi.pushView(new Rez.Menus.TetrisBoardSizeMenu(), new TetrisBoardSizeMenuDelegate(_view), WatchUi.SLIDE_UP);
         } else if (item == :item_speed) {
             WatchUi.pushView(new Rez.Menus.TetrisSpeedMenu(), new TetrisSpeedMenuDelegate(_view), WatchUi.SLIDE_UP);
         } else if (item == :item_reset) {

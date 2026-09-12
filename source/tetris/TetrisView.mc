@@ -8,7 +8,7 @@ import Toybox.Lang;
 class TetrisView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "tetris_high";
-    private const COLS = 7;
+    private const DEFAULT_COLS = 9;
     private const BASE_TICK_MS = 500;
 
     private var _width as Number = 0;
@@ -16,6 +16,7 @@ class TetrisView extends WatchUi.View {
     private var _boardLeft as Number = 0;
     private var _boardTop as Number = 0;
     private var _cellSize as Number = 0;
+    private var _cols as Number = DEFAULT_COLS;
     private var _rows as Number = 10;
 
     private var _board as Array<Array<Number> >;
@@ -58,8 +59,8 @@ class TetrisView extends WatchUi.View {
 
     private function layoutBoard() as Void {
         var boardWidth = BoardMetrics.squareBoardSize(_width, _height, 16);
-        _cellSize = boardWidth / COLS;
-        boardWidth = _cellSize * COLS;
+        _cellSize = boardWidth / _cols;
+        boardWidth = _cellSize * _cols;
 
         var isRound = BoardMetrics.isRoundScreen();
         var boardHeight = isRound ? (boardWidth * 1.3).toNumber() : (_height - 40);
@@ -73,11 +74,18 @@ class TetrisView extends WatchUi.View {
         }
     }
 
-    // Difficulty picks the starting level (faster initial fall, and every
-    // level clears fewer lines before speeding up further).
-    function setDifficulty(startLevel as Number) as Void {
-        _startLevel = startLevel;
+    function setBoardSize(cols as Number) as Void {
+        _cols = cols;
+        if (_width > 0) {
+            layoutBoard();
+        }
         resetGame();
+    }
+
+    // Callback target for NumberKeypadDelegate — see item_grid_custom in
+    // TetrisBoardSizeMenuDelegate.
+    function onCustomBoardSize(value as Number) as Void {
+        setBoardSize(value);
     }
 
     function setSpeedMultiplier(multiplier as Float) as Void {
@@ -91,7 +99,7 @@ class TetrisView extends WatchUi.View {
         while (r < _rows) {
             var row = [] as Array<Number>;
             var c = 0;
-            while (c < COLS) {
+            while (c < _cols) {
                 row.add(0);
                 c++;
             }
@@ -156,7 +164,7 @@ class TetrisView extends WatchUi.View {
         while (i < cells.size()) {
             var r = row + cells[i][0];
             var c = col + cells[i][1];
-            if (c < 0 || c >= COLS || r >= _rows) {
+            if (c < 0 || c >= _cols || r >= _rows) {
                 return false;
             }
             if (r >= 0 && _board[r][c] != 0) {
@@ -172,7 +180,7 @@ class TetrisView extends WatchUi.View {
         _nextPieceType = (Math.rand() % 7).abs();
         _pieceRotation = 0;
         _pieceRow = -1;
-        _pieceCol = (COLS - 4) / 2;
+        _pieceCol = (_cols - 4) / 2;
         if (!canPlace(_pieceType, _pieceRotation, _pieceRow, _pieceCol)) {
             markGameOver();
         }
@@ -250,10 +258,10 @@ class TetrisView extends WatchUi.View {
         while (r < _rows) {
             var full = true;
             var c = 0;
-            while (c < COLS) {
+            while (c < _cols) {
                 if (_board[r][c] == 0) {
                     full = false;
-                    c = COLS;
+                    c = _cols;
                 } else {
                     c++;
                 }
@@ -271,7 +279,7 @@ class TetrisView extends WatchUi.View {
             while (j < cleared) {
                 var emptyRow2 = [] as Array<Number>;
                 var c3 = 0;
-                while (c3 < COLS) {
+                while (c3 < _cols) {
                     emptyRow2.add(0);
                     c3++;
                 }
@@ -357,7 +365,7 @@ class TetrisView extends WatchUi.View {
         var r = 0;
         while (r < _rows) {
             var c = 0;
-            while (c < COLS) {
+            while (c < _cols) {
                 var v = _board[r][c];
                 if (v != 0) {
                     var color = _colors[v - 1];
@@ -386,7 +394,7 @@ class TetrisView extends WatchUi.View {
         }
 
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.drawRectangle(_boardLeft, _boardTop, _cellSize * COLS, _cellSize * _rows);
+        dc.drawRectangle(_boardLeft, _boardTop, _cellSize * _cols, _cellSize * _rows);
     }
 
 }

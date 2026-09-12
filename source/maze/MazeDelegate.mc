@@ -31,10 +31,8 @@ class MazeDelegate extends WatchUi.BehaviorDelegate {
         return true;
     }
 
-    // No score or difficulty to configure, so the menu button just starts a
-    // fresh maze instead of opening a submenu.
     function onMenu() as Boolean {
-        _view.resetGame();
+        WatchUi.pushView(new Rez.Menus.MazeMenu(), new MazeMenuDelegate(_view), WatchUi.SLIDE_UP);
         return true;
     }
 

@@ -12,9 +12,7 @@ class BalanceBallMenuDelegate extends WatchUi.MenuInputDelegate {
 
     function onMenuItem(item as Symbol) as Void {
         if (item == :item_difficulty) {
-            WatchUi.pushView(new Rez.Menus.BalanceBallDifficultyMenu(), new BalanceBallDifficultyMenuDelegate(_view), WatchUi.SLIDE_UP);
-        } else if (item == :item_speed) {
-            WatchUi.pushView(new Rez.Menus.BalanceBallSpeedMenu(), new BalanceBallSpeedMenuDelegate(_view), WatchUi.SLIDE_UP);
+            WatchUi.pushView(new Rez.Menus.BalanceBallLevelMenu(), new BalanceBallLevelMenuDelegate(_view), WatchUi.SLIDE_UP);
         } else if (item == :item_reset) {
             _view.resetGame();
         }
