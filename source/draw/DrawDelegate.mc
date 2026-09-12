@@ -29,8 +29,19 @@ class DrawDelegate extends WatchUi.BehaviorDelegate {
         return true;
     }
 
+    // Swipe left is a quick shortcut for undo, without opening the menu.
+    // Other directions fall through so the default back-swipe still works.
+    function onSwipe(swipeEvent as WatchUi.SwipeEvent) as Boolean {
+        if (swipeEvent.getDirection() == WatchUi.SWIPE_LEFT) {
+            _view.undoLast();
+            return true;
+        }
+        return false;
+    }
+
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.DrawMenu(), new DrawMenuDelegate(_view), WatchUi.SLIDE_UP);
+        var toolbar = new DrawToolbarView(_view);
+        WatchUi.pushView(toolbar, new DrawToolbarDelegate(_view, toolbar), WatchUi.SLIDE_UP);
         return true;
     }
 

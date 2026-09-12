@@ -63,5 +63,25 @@
     <string id="tool_brush">Brush</string>
     <string id="tool_line">Line</string>
     <string id="tool_rectangle">Rectangle</string>
+    <string id="tool_rectangle_fill">Rectangle (Filled)</string>
     <string id="tool_circle">Circle</string>
+    <string id="tool_circle_fill">Circle (Filled)</string>
+    <string id="tool_eraser">Eraser</string>
+    <string id="menu_label_brush_size">Brush Size</string>
+    <string id="menu_label_colors">Colors</string>
+    <string id="menu_label_undo">Undo</string>
+
+    <string id="color_white">White</string>
+    <string id="color_lt_gray">Light Gray</string>
+    <string id="color_dk_gray">Dark Gray</string>
+    <string id="color_red">Red</string>
+    <string id="color_dk_red">Dark Red</string>
+    <string id="color_orange">Orange</string>
+    <string id="color_yellow">Yellow</string>
+    <string id="color_green">Green</string>
+    <string id="color_dk_green">Dark Green</string>
+    <string id="color_blue">Blue</string>
+    <string id="color_dk_blue">Dark Blue</string>
+    <string id="color_purple">Purple</string>
+    <string id="color_pink">Pink</string>
 </strings>
