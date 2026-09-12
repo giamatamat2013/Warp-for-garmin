@@ -11,4 +11,5 @@
     <menu-item id="item_balanceball" label="@Strings.game_balanceball" />
     <menu-item id="item_maze" label="@Strings.game_maze" />
     <menu-item id="item_racing" label="@Strings.game_racing" />
+    <menu-item id="item_draw" label="@Strings.game_draw" />
 </menu2>

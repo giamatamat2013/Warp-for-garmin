@@ -1,0 +1,7 @@
+<menu id="DrawMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <menu-item id="item_tool_brush" label="@Strings.tool_brush" />
+    <menu-item id="item_tool_line" label="@Strings.tool_line" />
+    <menu-item id="item_tool_rectangle" label="@Strings.tool_rectangle" />
+    <menu-item id="item_tool_circle" label="@Strings.tool_circle" />
+    <menu-item id="item_clear" label="@Strings.menu_label_clear" />
+</menu>

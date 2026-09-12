@@ -22,6 +22,17 @@ class PongView extends WatchUi.View {
     private var _aiReactionTicks as Number = 4;
     private var _aiTickCounter as Number = 0;
     private var _aiTarget as Float = 0.0;
+    // Chance [0,1] that the AI decides to blow this shot outright, rolled
+    // once per approach (see _aiHeadingToAi below).
+    private var _aiMissChance as Float = 0.15;
+    // When a miss is rolled, the AI stops tracking the ball entirely and
+    // beelines for the far edge of the court instead — an aim-error offset
+    // on the real target kept getting absorbed by clampToPlayfield whenever
+    // the ball was already near a wall (common, given deflectBall's steep
+    // angles), so this actively flees rather than just aiming badly.
+    private var _aiMissActive as Boolean = false;
+    private var _aiFleeTarget as Float = 0.0;
+    private var _aiHeadingToAi as Boolean = false;
 
     private var _width as Number = 0;
     private var _height as Number = 0;
@@ -115,10 +126,11 @@ class PongView extends WatchUi.View {
         return _height;
     }
 
-    function setDifficulty(aiSpeed as Float, ballSpeed as Float, aiReactionTicks as Number) as Void {
+    function setDifficulty(aiSpeed as Float, ballSpeed as Float, aiReactionTicks as Number, aiMissChance as Float) as Void {
         _aiSpeed = aiSpeed;
         _ballSpeed = ballSpeed;
         _aiReactionTicks = aiReactionTicks;
+        _aiMissChance = aiMissChance;
     }
 
     function setSpeedMultiplier(multiplier as Float) as Void {
@@ -187,6 +199,25 @@ class PongView extends WatchUi.View {
             _ballVelY = -_ballVelY;
         }
 
+        // Roll once per approach (the instant the ball turns toward the AI)
+        // for whether this rally is a miss. On a miss, the AI picks the court
+        // edge farthest from where the ball is heading and commits to it for
+        // the whole approach — it actively runs away rather than aiming
+        // badly, since a fixed offset on the real target kept getting pulled
+        // back into range by clampToPlayfield.
+        var headingToAiNow = _ballVelX < 0;
+        if (headingToAiNow && !_aiHeadingToAi) {
+            _aiMissActive = (randomFloat(0.0, 1.0) < _aiMissChance);
+            if (_aiMissActive) {
+                var range = verticalHalfRangeAt(_aiX);
+                var edgeHalf = PADDLE_HEIGHT / 2.0;
+                var minY = _centerY - range + edgeHalf;
+                var maxY = _centerY + range - edgeHalf;
+                _aiFleeTarget = (_ballY < _centerY) ? maxY : minY;
+            }
+        }
+        _aiHeadingToAi = headingToAiNow;
+
         // AI paddle only re-reads the ball's position every _aiReactionTicks
         // ticks, then walks toward that (possibly stale) target in between.
         // A ball that keeps bouncing off the top/bottom walls (common given
@@ -196,9 +227,9 @@ class PongView extends WatchUi.View {
         _aiTickCounter += 1;
         if (_aiTickCounter >= _aiReactionTicks) {
             _aiTickCounter = 0;
-            _aiTarget = _ballY;
+            _aiTarget = _aiMissActive ? _aiFleeTarget : _ballY;
         }
-        var aiSpeed = _aiSpeed * _speedMultiplier;
+        var aiSpeed = _aiSpeed;
         if (_aiY < _aiTarget) {
             _aiY += aiSpeed;
         } else if (_aiY > _aiTarget) {

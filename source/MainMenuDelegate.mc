@@ -50,6 +50,9 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
         } else if (id == :item_racing) {
             var view = new RacingView();
             WatchUi.pushView(view, new RacingDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_draw) {
+            var view = new DrawView();
+            WatchUi.pushView(view, new DrawDelegate(view), WatchUi.SLIDE_LEFT);
         }
     }
 

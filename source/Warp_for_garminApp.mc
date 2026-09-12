@@ -26,7 +26,7 @@ class Warp_for_garminApp extends Application.AppBase {
         // there. Pong, Flappy Bird and Breakout all have button fallbacks,
         // so they stay available everywhere.
         if (!System.getDeviceSettings().isTouchScreen) {
-            var touchOnlyGames = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris];
+            var touchOnlyGames = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris, :item_draw];
             var i = 0;
             while (i < touchOnlyGames.size()) {
                 var index = menu.findItemById(touchOnlyGames[i]);
