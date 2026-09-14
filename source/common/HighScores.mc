@@ -6,6 +6,8 @@ import Toybox.Application.Storage;
 // collide.
 module HighScores {
 
+    const RECENT_COUNTER_KEY = "menu_recent_counter";
+
     function get(key as String) as Number {
         var v = Storage.getValue(key);
         if (v == null) {
@@ -40,6 +42,16 @@ module HighScores {
             return true;
         }
         return false;
+    }
+
+    function markPlayed(key as String) as Void {
+        var counter = get(RECENT_COUNTER_KEY) + 1;
+        Storage.setValue(RECENT_COUNTER_KEY, counter);
+        Storage.setValue("menu_recent_" + key, counter);
+    }
+
+    function getPlayedOrder(key as String) as Number {
+        return get("menu_recent_" + key);
     }
 
 }

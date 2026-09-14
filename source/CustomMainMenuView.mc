@@ -30,34 +30,69 @@ class CustomMainMenuView extends WatchUi.View {
 
     private function buildItems() as Array<Dictionary> {
         var all = [
-            { :id => :item_pong, :label => WatchUi.loadResource(Rez.Strings.game_pong) as String },
-            { :id => :item_2048, :label => WatchUi.loadResource(Rez.Strings.game_2048) as String },
-            { :id => :item_flappy, :label => WatchUi.loadResource(Rez.Strings.game_flappy) as String },
-            { :id => :item_snake, :label => WatchUi.loadResource(Rez.Strings.game_snake) as String },
-            { :id => :item_breakout, :label => WatchUi.loadResource(Rez.Strings.game_breakout) as String },
-            { :id => :item_tictactoe, :label => WatchUi.loadResource(Rez.Strings.game_tictactoe) as String },
-            { :id => :item_simon, :label => WatchUi.loadResource(Rez.Strings.game_simon) as String },
-            { :id => :item_dino, :label => WatchUi.loadResource(Rez.Strings.game_dino) as String },
-            { :id => :item_tetris, :label => WatchUi.loadResource(Rez.Strings.game_tetris) as String },
-            { :id => :item_balanceball, :label => WatchUi.loadResource(Rez.Strings.game_balanceball) as String },
-            { :id => :item_maze, :label => WatchUi.loadResource(Rez.Strings.game_maze) as String },
-            { :id => :item_racing, :label => WatchUi.loadResource(Rez.Strings.game_racing) as String },
-            { :id => :item_draw, :label => WatchUi.loadResource(Rez.Strings.game_draw) as String }
+            { :id => :item_draw, :key => "draw", :priority => 1, :label => WatchUi.loadResource(Rez.Strings.game_draw) as String },
+            { :id => :item_breakout, :key => "breakout", :priority => 2, :label => WatchUi.loadResource(Rez.Strings.game_breakout) as String },
+            { :id => :item_racing, :key => "racing", :priority => 3, :label => WatchUi.loadResource(Rez.Strings.game_racing) as String },
+            { :id => :item_tetris, :key => "tetris", :priority => 4, :label => WatchUi.loadResource(Rez.Strings.game_tetris) as String },
+            { :id => :item_2048, :key => "2048", :priority => 5, :label => WatchUi.loadResource(Rez.Strings.game_2048) as String },
+            { :id => :item_flappy, :key => "flappy", :priority => 6, :label => WatchUi.loadResource(Rez.Strings.game_flappy) as String },
+            { :id => :item_pong, :key => "pong", :priority => 7, :label => WatchUi.loadResource(Rez.Strings.game_pong) as String },
+            { :id => :item_snake, :key => "snake", :priority => 8, :label => WatchUi.loadResource(Rez.Strings.game_snake) as String },
+            { :id => :item_dino, :key => "dino", :priority => 9, :label => WatchUi.loadResource(Rez.Strings.game_dino) as String },
+            { :id => :item_simon, :key => "simon", :priority => 10, :label => WatchUi.loadResource(Rez.Strings.game_simon) as String },
+            { :id => :item_tictactoe, :key => "tictactoe", :priority => 11, :label => WatchUi.loadResource(Rez.Strings.game_tictactoe) as String },
+            { :id => :item_balanceball, :key => "balanceball", :priority => 12, :label => WatchUi.loadResource(Rez.Strings.game_balanceball) as String },
+            { :id => :item_maze, :key => "maze", :priority => 13, :label => WatchUi.loadResource(Rez.Strings.game_maze) as String }
         ];
 
-        if (System.getDeviceSettings().isTouchScreen) {
-            return all;
-        }
-
         var filtered = [];
+        if (System.getDeviceSettings().isTouchScreen) {
+            filtered = all;
+        } else {
         var i = 0;
-        while (i < all.size()) {
-            if (TOUCH_ONLY_GAMES.indexOf(all[i][:id]) < 0) {
-                filtered.add(all[i]);
+            while (i < all.size()) {
+                if (TOUCH_ONLY_GAMES.indexOf(all[i][:id]) < 0) {
+                    filtered.add(all[i]);
+                }
+                i++;
+            }
+        }
+        sortItems(filtered);
+        return filtered;
+    }
+
+    private function sortItems(items as Array<Dictionary>) as Void {
+        var i = 1;
+        while (i < items.size()) {
+            var current = items[i];
+            var j = i - 1;
+            while (j >= 0 && comesAfter(items[j], current)) {
+                items[j + 1] = items[j];
+                j--;
+            }
+            items[j + 1] = current;
+            i++;
+        }
+    }
+
+    private function comesAfter(left as Dictionary, right as Dictionary) as Boolean {
+        var leftRecent = HighScores.getPlayedOrder(left[:key] as String);
+        var rightRecent = HighScores.getPlayedOrder(right[:key] as String);
+        if (leftRecent != rightRecent) {
+            return leftRecent < rightRecent;
+        }
+        return (left[:priority] as Number) > (right[:priority] as Number);
+    }
+
+    function markPlayed(id as Symbol) as Void {
+        var i = 0;
+        while (i < _items.size()) {
+            if (_items[i][:id] == id) {
+                HighScores.markPlayed(_items[i][:key] as String);
+                return;
             }
             i++;
         }
-        return filtered;
     }
 
     function onLayout(dc as Dc) as Void {

@@ -17,6 +17,7 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
     // for unsupported devices in Warp_for_garminApp.getInitialView() instead of
     // raising the requirement for everyone.
     function select(id as Symbol) as Void {
+        _view.markPlayed(id);
         if (id == :item_pong) {
             var view = new PongView();
             WatchUi.pushView(view, new PongDelegate(view), WatchUi.SLIDE_LEFT);
