@@ -15,7 +15,7 @@ class CustomMainMenuView extends WatchUi.View {
     private const ICON_BOX = 38;
     private const GRID_MARGIN = 4;
     private const GRID_GAP = 4;
-    private const TOUCH_ONLY_GAMES = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris, :item_draw];
+    private const TOUCH_ONLY_GAMES = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris, :item_draw, :item_wordrush];
 
     private var _items as Array<Dictionary> = [];
     private var _selected as Number = 0;
@@ -32,17 +32,22 @@ class CustomMainMenuView extends WatchUi.View {
         var all = [
             { :id => :item_draw, :key => "draw", :priority => 1, :label => WatchUi.loadResource(Rez.Strings.game_draw) as String },
             { :id => :item_breakout, :key => "breakout", :priority => 2, :label => WatchUi.loadResource(Rez.Strings.game_breakout) as String },
-            { :id => :item_racing, :key => "racing", :priority => 3, :label => WatchUi.loadResource(Rez.Strings.game_racing) as String },
-            { :id => :item_tetris, :key => "tetris", :priority => 4, :label => WatchUi.loadResource(Rez.Strings.game_tetris) as String },
-            { :id => :item_2048, :key => "2048", :priority => 5, :label => WatchUi.loadResource(Rez.Strings.game_2048) as String },
-            { :id => :item_flappy, :key => "flappy", :priority => 6, :label => WatchUi.loadResource(Rez.Strings.game_flappy) as String },
-            { :id => :item_pong, :key => "pong", :priority => 7, :label => WatchUi.loadResource(Rez.Strings.game_pong) as String },
-            { :id => :item_snake, :key => "snake", :priority => 8, :label => WatchUi.loadResource(Rez.Strings.game_snake) as String },
-            { :id => :item_dino, :key => "dino", :priority => 9, :label => WatchUi.loadResource(Rez.Strings.game_dino) as String },
-            { :id => :item_simon, :key => "simon", :priority => 10, :label => WatchUi.loadResource(Rez.Strings.game_simon) as String },
-            { :id => :item_tictactoe, :key => "tictactoe", :priority => 11, :label => WatchUi.loadResource(Rez.Strings.game_tictactoe) as String },
-            { :id => :item_balanceball, :key => "balanceball", :priority => 12, :label => WatchUi.loadResource(Rez.Strings.game_balanceball) as String },
-            { :id => :item_maze, :key => "maze", :priority => 13, :label => WatchUi.loadResource(Rez.Strings.game_maze) as String }
+            { :id => :item_invaders, :key => "invaders", :priority => 3, :label => WatchUi.loadResource(Rez.Strings.game_invaders) as String },
+            { :id => :item_racing, :key => "racing", :priority => 4, :label => WatchUi.loadResource(Rez.Strings.game_racing) as String },
+            { :id => :item_gravityflip, :key => "gravityflip", :priority => 5, :label => WatchUi.loadResource(Rez.Strings.game_gravityflip) as String },
+            { :id => :item_asteroid, :key => "asteroid", :priority => 6, :label => WatchUi.loadResource(Rez.Strings.game_asteroid) as String },
+            { :id => :item_pinball, :key => "pinball", :priority => 7, :label => WatchUi.loadResource(Rez.Strings.game_pinball) as String },
+            { :id => :item_tetris, :key => "tetris", :priority => 8, :label => WatchUi.loadResource(Rez.Strings.game_tetris) as String },
+            { :id => :item_2048, :key => "2048", :priority => 9, :label => WatchUi.loadResource(Rez.Strings.game_2048) as String },
+            { :id => :item_wordrush, :key => "wordrush", :priority => 10, :label => WatchUi.loadResource(Rez.Strings.game_wordrush) as String },
+            { :id => :item_flappy, :key => "flappy", :priority => 11, :label => WatchUi.loadResource(Rez.Strings.game_flappy) as String },
+            { :id => :item_dino, :key => "dino", :priority => 12, :label => WatchUi.loadResource(Rez.Strings.game_dino) as String },
+            { :id => :item_tiltmaze, :key => "tiltmaze", :priority => 13, :label => WatchUi.loadResource(Rez.Strings.game_tiltmaze) as String },
+            { :id => :item_pong, :key => "pong", :priority => 14, :label => WatchUi.loadResource(Rez.Strings.game_pong) as String },
+            { :id => :item_snake, :key => "snake", :priority => 15, :label => WatchUi.loadResource(Rez.Strings.game_snake) as String },
+            { :id => :item_simon, :key => "simon", :priority => 16, :label => WatchUi.loadResource(Rez.Strings.game_simon) as String },
+            { :id => :item_balanceball, :key => "balanceball", :priority => 17, :label => WatchUi.loadResource(Rez.Strings.game_balanceball) as String },
+            { :id => :item_tictactoe, :key => "tictactoe", :priority => 18, :label => WatchUi.loadResource(Rez.Strings.game_tictactoe) as String }
         ];
 
         var filtered = [];

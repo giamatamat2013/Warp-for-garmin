@@ -11,9 +11,14 @@
     <string id="game_dino">Dino Runner</string>
     <string id="game_tetris">Tetris</string>
     <string id="game_balanceball">Balance Ball</string>
-    <string id="game_maze">Maze</string>
+    <string id="game_invaders">Space Invaders</string>
     <string id="game_racing">Racing</string>
     <string id="game_draw">Draw</string>
+    <string id="game_gravityflip">Gravity Flip</string>
+    <string id="game_asteroid">Asteroid Dodge</string>
+    <string id="game_pinball">Pinball</string>
+    <string id="game_tiltmaze">Tilt Maze</string>
+    <string id="game_wordrush">Word Rush</string>
 
     <string id="menu_label_difficulty">Difficulty</string>
     <string id="menu_label_gap_size">Gap Size</string>
@@ -52,7 +57,6 @@
     <string id="board_size_9x9">9x9</string>
     <string id="board_size_11x11">11x11</string>
     <string id="board_size_13x13">13x13</string>
-    <string id="menu_label_new_maze">New Maze</string>
     <string id="menu_label_lanes">Lanes</string>
     <string id="lanes_2">2 Lanes</string>
     <string id="lanes_3">3 Lanes</string>

@@ -34,12 +34,22 @@ module GameIcons {
             drawTetris(dc, x, y, s, color);
         } else if (id == :item_balanceball) {
             drawBalanceBall(dc, x, y, s, color);
-        } else if (id == :item_maze) {
-            drawMaze(dc, x, y, s, color);
+        } else if (id == :item_invaders) {
+            drawInvaders(dc, x, y, s, color);
         } else if (id == :item_racing) {
             drawRacing(dc, x, y, s, color);
         } else if (id == :item_draw) {
             drawPencil(dc, x, y, s, color);
+        } else if (id == :item_gravityflip) {
+            drawGravityFlip(dc, x, y, s, color);
+        } else if (id == :item_asteroid) {
+            drawAsteroid(dc, x, y, s, color);
+        } else if (id == :item_pinball) {
+            drawPinball(dc, x, y, s, color);
+        } else if (id == :item_tiltmaze) {
+            drawTiltMaze(dc, x, y, s, color);
+        } else if (id == :item_wordrush) {
+            drawWordRush(dc, x, y, s, color);
         }
     }
 
@@ -173,12 +183,31 @@ module GameIcons {
         dc.fillCircle(x + (s * 0.5).toNumber(), y + (s * 0.36).toNumber(), (s * 0.15).toNumber());
     }
 
-    function drawMaze(dc as Graphics.Dc, x as Number, y as Number, s as Number, color as Number) as Void {
-        dc.drawRectangle(x + (s * 0.08).toNumber(), y + (s * 0.08).toNumber(), (s * 0.84).toNumber(), (s * 0.84).toNumber());
-        dc.drawLine(x + (s * 0.08).toNumber(), y + (s * 0.36).toNumber(), x + (s * 0.62).toNumber(), y + (s * 0.36).toNumber());
-        dc.drawLine(x + (s * 0.38).toNumber(), y + (s * 0.36).toNumber(), x + (s * 0.38).toNumber(), y + (s * 0.64).toNumber());
-        dc.drawLine(x + (s * 0.38).toNumber(), y + (s * 0.64).toNumber(), x + (s * 0.92).toNumber(), y + (s * 0.64).toNumber());
-        dc.drawLine(x + (s * 0.64).toNumber(), y + (s * 0.64).toNumber(), x + (s * 0.64).toNumber(), y + (s * 0.92).toNumber());
+    function drawInvaders(dc as Graphics.Dc, x as Number, y as Number, s as Number, color as Number) as Void {
+        // Alien invader body
+        var aw = (s * 0.55).toNumber();
+        var ah = (s * 0.35).toNumber();
+        var ax = x + (s * 0.22).toNumber();
+        var ay = y + (s * 0.18).toNumber();
+        dc.fillRoundedRectangle(ax, ay, aw, ah, 3);
+        // Antennae
+        dc.drawLine(ax + (aw * 0.25).toNumber(), ay, ax + (aw * 0.15).toNumber(), ay - (s * 0.10).toNumber());
+        dc.drawLine(ax + (aw * 0.75).toNumber(), ay, ax + (aw * 0.85).toNumber(), ay - (s * 0.10).toNumber());
+        // Tentacles / legs
+        dc.fillRectangle(ax, ay + ah, (aw * 0.22).toNumber(), (s * 0.10).toNumber());
+        dc.fillRectangle(ax + aw - (aw * 0.22).toNumber(), ay + ah, (aw * 0.22).toNumber(), (s * 0.10).toNumber());
+        // Eyes
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+        dc.fillCircle(ax + (aw * 0.30).toNumber(), ay + (ah * 0.45).toNumber(), 2);
+        dc.fillCircle(ax + (aw * 0.70).toNumber(), ay + (ah * 0.45).toNumber(), 2);
+        // Player cannon at bottom
+        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+        var cw = (s * 0.40).toNumber();
+        var ch = (s * 0.12).toNumber();
+        var cx = x + (s * 0.30).toNumber();
+        var cy = y + (s * 0.76).toNumber();
+        dc.fillRoundedRectangle(cx, cy, cw, ch, 2);
+        dc.fillRectangle(cx + (cw * 0.40).toNumber(), cy - (s * 0.08).toNumber(), (cw * 0.20).toNumber(), (s * 0.08).toNumber());
     }
 
     function drawRacing(dc as Graphics.Dc, x as Number, y as Number, s as Number, color as Number) as Void {
@@ -204,6 +233,68 @@ module GameIcons {
             [x + (s * 0.30).toNumber(), y + (s * 0.60).toNumber()],
             [x + (s * 0.34).toNumber(), y + (s * 0.78).toNumber()]
         ]);
+    }
+
+    function drawGravityFlip(dc as Graphics.Dc, x as Number, y as Number, s as Number, color as Number) as Void {
+        // Upper and lower platforms
+        dc.fillRectangle(x + (s * 0.10).toNumber(), y + (s * 0.15).toNumber(), (s * 0.80).toNumber(), (s * 0.12).toNumber());
+        dc.fillRectangle(x + (s * 0.10).toNumber(), y + (s * 0.73).toNumber(), (s * 0.80).toNumber(), (s * 0.12).toNumber());
+        // Player square in middle
+        var sq = (s * 0.22).toNumber();
+        dc.fillRectangle(x + (s * 0.39).toNumber(), y + (s * 0.39).toNumber(), sq, sq);
+        // Opposing vertical arrows
+        dc.drawLine(x + (s * 0.22).toNumber(), y + (s * 0.32).toNumber(), x + (s * 0.22).toNumber(), y + (s * 0.68).toNumber());
+        dc.drawLine(x + (s * 0.78).toNumber(), y + (s * 0.32).toNumber(), x + (s * 0.78).toNumber(), y + (s * 0.68).toNumber());
+    }
+
+    function drawAsteroid(dc as Graphics.Dc, x as Number, y as Number, s as Number, color as Number) as Void {
+        // Falling rocks
+        dc.fillCircle(x + (s * 0.28).toNumber(), y + (s * 0.22).toNumber(), (s * 0.12).toNumber());
+        dc.fillCircle(x + (s * 0.75).toNumber(), y + (s * 0.32).toNumber(), (s * 0.16).toNumber());
+        // Ship at bottom
+        dc.fillPolygon([
+            [x + (s * 0.50).toNumber(), y + (s * 0.52).toNumber()],
+            [x + (s * 0.30).toNumber(), y + (s * 0.85).toNumber()],
+            [x + (s * 0.50).toNumber(), y + (s * 0.78).toNumber()],
+            [x + (s * 0.70).toNumber(), y + (s * 0.85).toNumber()]
+        ]);
+    }
+
+    function drawPinball(dc as Graphics.Dc, x as Number, y as Number, s as Number, color as Number) as Void {
+        // Outer arc/frame
+        dc.drawRectangle(x + (s * 0.10).toNumber(), y + (s * 0.08).toNumber(), (s * 0.80).toNumber(), (s * 0.84).toNumber());
+        // Bumpers
+        dc.fillCircle(x + (s * 0.35).toNumber(), y + (s * 0.32).toNumber(), (s * 0.08).toNumber());
+        dc.fillCircle(x + (s * 0.65).toNumber(), y + (s * 0.32).toNumber(), (s * 0.08).toNumber());
+        dc.fillCircle(x + (s * 0.50).toNumber(), y + (s * 0.48).toNumber(), (s * 0.08).toNumber());
+        // Flippers
+        dc.drawLine(x + (s * 0.25).toNumber(), y + (s * 0.78).toNumber(), x + (s * 0.44).toNumber(), y + (s * 0.72).toNumber());
+        dc.drawLine(x + (s * 0.75).toNumber(), y + (s * 0.78).toNumber(), x + (s * 0.56).toNumber(), y + (s * 0.72).toNumber());
+    }
+
+    function drawTiltMaze(dc as Graphics.Dc, x as Number, y as Number, s as Number, color as Number) as Void {
+        // Maze border
+        dc.drawRectangle(x + (s * 0.10).toNumber(), y + (s * 0.10).toNumber(), (s * 0.80).toNumber(), (s * 0.80).toNumber());
+        // Maze walls
+        dc.drawLine(x + (s * 0.10).toNumber(), y + (s * 0.36).toNumber(), x + (s * 0.60).toNumber(), y + (s * 0.36).toNumber());
+        dc.drawLine(x + (s * 0.40).toNumber(), y + (s * 0.36).toNumber(), x + (s * 0.40).toNumber(), y + (s * 0.64).toNumber());
+        dc.drawLine(x + (s * 0.40).toNumber(), y + (s * 0.64).toNumber(), x + (s * 0.90).toNumber(), y + (s * 0.64).toNumber());
+        // Ball
+        dc.fillCircle(x + (s * 0.25).toNumber(), y + (s * 0.23).toNumber(), (s * 0.08).toNumber());
+    }
+
+    function drawWordRush(dc as Graphics.Dc, x as Number, y as Number, s as Number, color as Number) as Void {
+        var g = (s * 0.06).toNumber();
+        var cell = ((s - g * 3) / 2).toNumber();
+        dc.drawRectangle(x + g, y + g, cell, cell);
+        dc.drawRectangle(x + g * 2 + cell, y + g, cell, cell);
+        dc.drawRectangle(x + g, y + g * 2 + cell, cell, cell);
+        dc.drawRectangle(x + g * 2 + cell, y + g * 2 + cell, cell, cell);
+        // Letter lines inside tiles
+        dc.drawLine(x + g + (cell * 0.2).toNumber(), y + g + (cell * 0.5).toNumber(), x + g + (cell * 0.8).toNumber(), y + g + (cell * 0.5).toNumber());
+        dc.drawLine(x + g * 2 + cell + (cell * 0.2).toNumber(), y + g + (cell * 0.5).toNumber(), x + g * 2 + cell + (cell * 0.8).toNumber(), y + g + (cell * 0.5).toNumber());
+        dc.drawLine(x + g + (cell * 0.2).toNumber(), y + g * 2 + cell + (cell * 0.5).toNumber(), x + g + (cell * 0.8).toNumber(), y + g * 2 + cell + (cell * 0.5).toNumber());
+        dc.drawLine(x + g * 2 + cell + (cell * 0.2).toNumber(), y + g * 2 + cell + (cell * 0.5).toNumber(), x + g * 2 + cell + (cell * 0.8).toNumber(), y + g * 2 + cell + (cell * 0.5).toNumber());
     }
 
 }

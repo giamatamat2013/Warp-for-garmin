@@ -48,15 +48,30 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         } else if (id == :item_balanceball) {
             var view = new BalanceBallView();
             WatchUi.pushView(view, new BalanceBallDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_maze) {
-            var view = new MazeView();
-            WatchUi.pushView(view, new MazeDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_invaders) {
+            var view = new InvadersView();
+            WatchUi.pushView(view, new InvadersDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_racing) {
             var view = new RacingView();
             WatchUi.pushView(view, new RacingDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_asteroid) {
+            var view = new AsteroidView();
+            WatchUi.pushView(view, new AsteroidDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_draw) {
             var view = new DrawView();
             WatchUi.pushView(view, new DrawDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_gravityflip) {
+            var view = new GravityFlipView();
+            WatchUi.pushView(view, new GravityFlipDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_pinball) {
+            var view = new PinballView();
+            WatchUi.pushView(view, new PinballDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_tiltmaze) {
+            var view = new TiltMazeView();
+            WatchUi.pushView(view, new TiltMazeDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_wordrush) {
+            var view = new WordRushView();
+            WatchUi.pushView(view, new WordRushDelegate(view), WatchUi.SLIDE_LEFT);
         }
     }
 
