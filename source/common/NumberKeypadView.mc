@@ -80,7 +80,7 @@ class NumberKeypadView extends WatchUi.View {
         var key = KEYS[idx];
         if (key.equals("DEL")) {
             if (_text.length() > 0) {
-                _text = _text.substring(0, _text.length() - 1);
+                _text = _text.substring(0, _text.length() - 1) as String;
             }
         } else if (key.equals("OK")) {
             var value = parsedValue();

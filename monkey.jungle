@@ -1,1 +1,12 @@
 project.manifest = manifest.xml
+
+# Touch-only games (see CustomMainMenuView.TOUCH_ONLY_GAMES) are hidden on
+# non-touch devices anyway. On 96KB non-touch devices their code is left out
+# of the build entirely (:touchGames) so the rest of the app fits in memory;
+# every other device builds them and drops the empty fallback (:noTouchGames).
+base.excludeAnnotations = noTouchGames
+descentg1.excludeAnnotations = touchGames
+instinct2.excludeAnnotations = touchGames
+instinct2s.excludeAnnotations = touchGames
+instinct2x.excludeAnnotations = touchGames
+instinctcrossover.excludeAnnotations = touchGames

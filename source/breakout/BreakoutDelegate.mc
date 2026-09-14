@@ -53,7 +53,7 @@ class BreakoutDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.BreakoutMenu(), new BreakoutMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, [GameMenu.level(Rez.Strings.menu_label_difficulty, :setDifficulty, [1.6, 1.3, 1.0, 0.75, 0.55]), GameMenu.speed(GameMenu.STANDARD_SPEEDS)]);
         return true;
     }
 

@@ -25,7 +25,7 @@ class GravityFlipDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.GravityFlipMenu(), new GravityFlipMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, [GameMenu.speed(GameMenu.STANDARD_SPEEDS)]);
         return true;
     }
 

@@ -54,7 +54,7 @@ class InvadersDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.InvadersMenu(), new InvadersMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, [GameMenu.speed(GameMenu.STANDARD_SPEEDS)]);
         return true;
     }
 

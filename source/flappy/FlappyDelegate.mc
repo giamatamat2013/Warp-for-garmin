@@ -25,7 +25,7 @@ class FlappyDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.FlappyMenu(), new FlappyMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, [GameMenu.level(Rez.Strings.menu_label_gap_size, :setGapMultiplier, [1.0, 0.8, 0.65, 0.5, 0.38]), GameMenu.level(Rez.Strings.menu_label_pipe_spacing, :setSpacingMultiplier, [1.4, 1.15, 1.0, 0.8, 0.65]), GameMenu.speed([0.9, 1.15, 1.6, 2.2, 2.9])]);
         return true;
     }
 

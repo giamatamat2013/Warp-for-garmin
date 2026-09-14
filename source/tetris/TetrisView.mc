@@ -5,6 +5,7 @@ import Toybox.System;
 import Toybox.Math;
 import Toybox.Lang;
 
+(:touchGames)
 class TetrisView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "tetris_high";

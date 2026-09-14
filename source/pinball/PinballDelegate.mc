@@ -55,7 +55,7 @@ class PinballDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.PinballMenu(), new PinballMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, []);
         return true;
     }
 

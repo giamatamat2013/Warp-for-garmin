@@ -5,9 +5,8 @@ import Toybox.System;
 
 // Custom main menu: a scrollable two-column grid of game tiles.
 //
-// Add a game here: add {:id => :item_x, :label => "X"} to buildItems() below
-// (it's filtered out automatically for non-touch devices if listed in
-// TOUCH_ONLY_GAMES), then handle :item_x in CustomMainMenuDelegate.select().
+// Add a game in Games.mc (it's filtered out automatically for non-touch
+// devices if listed in TOUCH_ONLY_GAMES here).
 class CustomMainMenuView extends WatchUi.View {
 
     private const COLUMNS = 2;
@@ -17,7 +16,8 @@ class CustomMainMenuView extends WatchUi.View {
     private const GRID_GAP = 4;
     private const TOUCH_ONLY_GAMES = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris, :item_draw, :item_wordrush];
 
-    private var _items as Array<Dictionary> = [];
+    private var _items as Array<Number> = [];   // indices into Games, in display order
+    private var _labels as Array<String> = [];  // parallel to Games.IDS
     private var _selected as Number = 0;
     private var _scrollY as Number = 0;
     private var _width as Number = 0;
@@ -25,48 +25,18 @@ class CustomMainMenuView extends WatchUi.View {
 
     function initialize() {
         View.initialize();
-        _items = buildItems();
-    }
-
-    private function buildItems() as Array<Dictionary> {
-        var all = [
-            { :id => :item_draw, :key => "draw", :priority => 1, :label => WatchUi.loadResource(Rez.Strings.game_draw) as String },
-            { :id => :item_breakout, :key => "breakout", :priority => 2, :label => WatchUi.loadResource(Rez.Strings.game_breakout) as String },
-            { :id => :item_invaders, :key => "invaders", :priority => 3, :label => WatchUi.loadResource(Rez.Strings.game_invaders) as String },
-            { :id => :item_racing, :key => "racing", :priority => 4, :label => WatchUi.loadResource(Rez.Strings.game_racing) as String },
-            { :id => :item_gravityflip, :key => "gravityflip", :priority => 5, :label => WatchUi.loadResource(Rez.Strings.game_gravityflip) as String },
-            { :id => :item_asteroid, :key => "asteroid", :priority => 6, :label => WatchUi.loadResource(Rez.Strings.game_asteroid) as String },
-            { :id => :item_pinball, :key => "pinball", :priority => 7, :label => WatchUi.loadResource(Rez.Strings.game_pinball) as String },
-            { :id => :item_tetris, :key => "tetris", :priority => 8, :label => WatchUi.loadResource(Rez.Strings.game_tetris) as String },
-            { :id => :item_2048, :key => "2048", :priority => 9, :label => WatchUi.loadResource(Rez.Strings.game_2048) as String },
-            { :id => :item_wordrush, :key => "wordrush", :priority => 10, :label => WatchUi.loadResource(Rez.Strings.game_wordrush) as String },
-            { :id => :item_flappy, :key => "flappy", :priority => 11, :label => WatchUi.loadResource(Rez.Strings.game_flappy) as String },
-            { :id => :item_dino, :key => "dino", :priority => 12, :label => WatchUi.loadResource(Rez.Strings.game_dino) as String },
-            { :id => :item_tiltmaze, :key => "tiltmaze", :priority => 13, :label => WatchUi.loadResource(Rez.Strings.game_tiltmaze) as String },
-            { :id => :item_pong, :key => "pong", :priority => 14, :label => WatchUi.loadResource(Rez.Strings.game_pong) as String },
-            { :id => :item_snake, :key => "snake", :priority => 15, :label => WatchUi.loadResource(Rez.Strings.game_snake) as String },
-            { :id => :item_simon, :key => "simon", :priority => 16, :label => WatchUi.loadResource(Rez.Strings.game_simon) as String },
-            { :id => :item_balanceball, :key => "balanceball", :priority => 17, :label => WatchUi.loadResource(Rez.Strings.game_balanceball) as String },
-            { :id => :item_tictactoe, :key => "tictactoe", :priority => 18, :label => WatchUi.loadResource(Rez.Strings.game_tictactoe) as String }
-        ];
-
-        var filtered = [];
-        if (System.getDeviceSettings().isTouchScreen) {
-            filtered = all;
-        } else {
-        var i = 0;
-            while (i < all.size()) {
-                if (TOUCH_ONLY_GAMES.indexOf(all[i][:id]) < 0) {
-                    filtered.add(all[i]);
-                }
-                i++;
+        var labelIds = Games.labels();
+        var touch = System.getDeviceSettings().isTouchScreen;
+        for (var i = 0; i < labelIds.size(); i++) {
+            _labels.add(WatchUi.loadResource(labelIds[i]) as String);
+            if (touch || TOUCH_ONLY_GAMES.indexOf(Games.IDS[i]) < 0) {
+                _items.add(i);
             }
         }
-        sortItems(filtered);
-        return filtered;
+        sortItems(_items);
     }
 
-    private function sortItems(items as Array<Dictionary>) as Void {
+    private function sortItems(items as Array<Number>) as Void {
         var i = 1;
         while (i < items.size()) {
             var current = items[i];
@@ -80,23 +50,20 @@ class CustomMainMenuView extends WatchUi.View {
         }
     }
 
-    private function comesAfter(left as Dictionary, right as Dictionary) as Boolean {
-        var leftRecent = HighScores.getPlayedOrder(left[:key] as String);
-        var rightRecent = HighScores.getPlayedOrder(right[:key] as String);
+    // Game indices double as priorities: a lower index comes earlier.
+    private function comesAfter(left as Number, right as Number) as Boolean {
+        var leftRecent = HighScores.getPlayedOrder(Games.KEYS[left]);
+        var rightRecent = HighScores.getPlayedOrder(Games.KEYS[right]);
         if (leftRecent != rightRecent) {
             return leftRecent < rightRecent;
         }
-        return (left[:priority] as Number) > (right[:priority] as Number);
+        return left > right;
     }
 
     function markPlayed(id as Symbol) as Void {
-        var i = 0;
-        while (i < _items.size()) {
-            if (_items[i][:id] == id) {
-                HighScores.markPlayed(_items[i][:key] as String);
-                return;
-            }
-            i++;
+        var i = Games.IDS.indexOf(id);
+        if (i >= 0) {
+            HighScores.markPlayed(Games.KEYS[i]);
         }
     }
 
@@ -114,7 +81,7 @@ class CustomMainMenuView extends WatchUi.View {
     }
 
     function idAt(index as Number) as Symbol {
-        return _items[index][:id] as Symbol;
+        return Games.IDS[_items[index]] as Symbol;
     }
 
     // Moves the selection by tile index and keeps the selected tile visible.
@@ -217,11 +184,11 @@ class CustomMainMenuView extends WatchUi.View {
         var iconColor = isSelected ? Graphics.COLOR_WHITE : Graphics.COLOR_LT_GRAY;
         var iconX = tileX + (tileWidth - ICON_BOX) / 2;
         var iconY = rowTop + 8;
-        GameIcons.draw(dc, item[:id] as Symbol, iconX, iconY, ICON_BOX, iconColor);
+        GameIcons.draw(dc, item, iconX, iconY, iconColor);
 
         var textColor = isSelected ? Graphics.COLOR_WHITE : Graphics.COLOR_LT_GRAY;
         dc.setColor(textColor, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(tileX + tileWidth / 2, rowTop + TILE_HEIGHT - 18, Graphics.FONT_XTINY, item[:label] as String, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(tileX + tileWidth / 2, rowTop + TILE_HEIGHT - 18, Graphics.FONT_XTINY, _labels[item], Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     private function drawScrollbar(dc as Dc) as Void {

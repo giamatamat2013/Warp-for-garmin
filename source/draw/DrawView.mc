@@ -3,6 +3,7 @@ import Toybox.WatchUi;
 import Toybox.Lang;
 import Toybox.Math;
 
+(:touchGames)
 class DrawView extends WatchUi.View {
 
     private const COLORS = [

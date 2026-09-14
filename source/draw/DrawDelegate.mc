@@ -1,6 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+(:touchGames)
 class DrawDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as DrawView;

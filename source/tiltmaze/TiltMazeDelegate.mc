@@ -32,7 +32,7 @@ class TiltMazeDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.TiltMazeMenu(), new TiltMazeLevelMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, [[Rez.Strings.menu_label_board_size, :setGridSize, [Rez.Strings.board_size_7x7, Rez.Strings.board_size_9x9, Rez.Strings.board_size_11x11, Rez.Strings.board_size_13x13], [7, 9, 11, 13]]]);
         return true;
     }
 

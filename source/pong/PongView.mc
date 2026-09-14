@@ -131,11 +131,12 @@ class PongView extends WatchUi.View {
         return _height;
     }
 
-    function setDifficulty(aiSpeed as Float, ballSpeed as Float, aiReactionTicks as Number, aiMissChance as Float) as Void {
-        _aiSpeed = aiSpeed;
-        _ballSpeed = ballSpeed;
-        _aiReactionTicks = aiReactionTicks;
-        _aiMissChance = aiMissChance;
+    // level: [aiSpeed, ballSpeed, aiReactionTicks, aiMissChance]
+    function setDifficulty(level as Array<Numeric>) as Void {
+        _aiSpeed = level[0] as Float;
+        _ballSpeed = level[1] as Float;
+        _aiReactionTicks = level[2] as Number;
+        _aiMissChance = level[3] as Float;
     }
 
     function setSpeedMultiplier(multiplier as Float) as Void {

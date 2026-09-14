@@ -1,6 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+(:touchGames)
 class SnakeDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as SnakeView;
@@ -43,7 +44,7 @@ class SnakeDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.SnakeMenu(), new SnakeMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, [[Rez.Strings.menu_label_board_size, :setBoardSize, [Rez.Strings.board_size_16x16, Rez.Strings.board_size_14x14, Rez.Strings.board_size_12x12, Rez.Strings.board_size_10x10, Rez.Strings.board_size_8x8], [16, 14, 12, 10, 8], [6, 24, 12]], GameMenu.speed([0.4, 0.55, 0.7, 0.9, 1.1])]);
         return true;
     }
 

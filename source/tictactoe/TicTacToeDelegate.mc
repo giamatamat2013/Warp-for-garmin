@@ -1,6 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+(:touchGames)
 class TicTacToeDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as TicTacToeView;
@@ -17,7 +18,7 @@ class TicTacToeDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.TicTacToeMenu(), new TicTacToeMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.openOptions(_view, [Rez.Strings.menu_label_difficulty, :setDifficulty, [Rez.Strings.menu_label_easy, Rez.Strings.menu_label_normal, Rez.Strings.menu_label_hard], [0, 1, 2]], true);
         return true;
     }
 

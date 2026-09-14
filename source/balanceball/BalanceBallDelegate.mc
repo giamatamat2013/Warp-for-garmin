@@ -32,7 +32,7 @@ class BalanceBallDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.BalanceBallMenu(), new BalanceBallMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, [GameMenu.level(Rez.Strings.menu_label_difficulty, :setLevel, [[0.95, 0.35], [0.90, 0.45], [0.85, 0.55], [0.75, 0.7], [0.65, 0.85]])]);
         return true;
     }
 

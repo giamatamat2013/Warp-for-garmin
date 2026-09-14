@@ -25,7 +25,7 @@ class DinoDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.DinoMenu(), new DinoMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, [GameMenu.level(Rez.Strings.menu_label_cactus_height, :setCactusHeight, [0.6, 0.8, 1.0, 1.25, 1.5]), GameMenu.level(Rez.Strings.menu_label_cactus_frequency, :setSpawnFrequency, [1.6, 1.3, 1.0, 0.75, 0.55]), GameMenu.speed(GameMenu.STANDARD_SPEEDS)]);
         return true;
     }
 

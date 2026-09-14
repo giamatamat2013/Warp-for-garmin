@@ -1,6 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+(:touchGames)
 class TetrisDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as TetrisView;
@@ -48,7 +49,7 @@ class TetrisDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.TetrisMenu(), new TetrisMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, [[Rez.Strings.menu_label_board_size, :setBoardSize, [Rez.Strings.board_size_7, Rez.Strings.board_size_9, Rez.Strings.board_size_11, Rez.Strings.board_size_13], [7, 9, 11, 13], [5, 16, 9]], GameMenu.speed(GameMenu.STANDARD_SPEEDS)]);
         return true;
     }
 

@@ -189,7 +189,7 @@ class PinballView extends WatchUi.View {
             var distSq = dx * dx + dy * dy;
             var minDist = (BALL_RADIUS + BUMPER_R).toFloat();
             if (distSq < minDist * minDist && distSq > 0.01) {
-                var dist = Math.sqrt(distSq);
+                var dist = Math.sqrt(distSq).toFloat();
                 // Push ball out and reflect velocity
                 var nx = dx / dist;
                 var ny = dy / dist;
@@ -200,7 +200,7 @@ class PinballView extends WatchUi.View {
                 _vx = (_vx - 2.0 * dot * nx) * 1.1;
                 _vy = (_vy - 2.0 * dot * ny) * 1.1;
                 // Cap speed
-                var spd = Math.sqrt(_vx * _vx + _vy * _vy);
+                var spd = Math.sqrt(_vx * _vx + _vy * _vy).toFloat();
                 if (spd > 320.0) {
                     _vx = _vx / spd * 320.0;
                     _vy = _vy / spd * 320.0;
@@ -240,8 +240,8 @@ class PinballView extends WatchUi.View {
         if (isRight) { angleDeg = -angleDeg; }
         var angleRad = angleDeg * Math.PI / 180.0;
         // Direction vector from pivot toward tip
-        var dirX = Math.cos(angleRad);
-        var dirY = Math.sin(angleRad);
+        var dirX = Math.cos(angleRad).toFloat();
+        var dirY = Math.sin(angleRad).toFloat();
         if (!isRight) { dirX = -dirX; } // left flipper extends to the left
 
         var tipX = pivotX + dirX * FLIPPER_LEN;
@@ -264,7 +264,7 @@ class PinballView extends WatchUi.View {
         var distSq = dx * dx + dy * dy;
         var minD = (BALL_RADIUS + FLIPPER_W).toFloat();
         if (distSq < minD * minD && distSq > 0.01 && _vy > 0) {
-            var dist = Math.sqrt(distSq);
+            var dist = Math.sqrt(distSq).toFloat();
             var nx = dx / dist;
             var ny = dy / dist;
             _bx = cx + nx * minD;
@@ -334,8 +334,8 @@ class PinballView extends WatchUi.View {
         var angleDeg = active ? FLIPPER_ACTIVE : FLIPPER_REST;
         if (isRight) { angleDeg = -angleDeg; }
         var angleRad = angleDeg * Math.PI / 180.0;
-        var dirX = Math.cos(angleRad);
-        var dirY = Math.sin(angleRad);
+        var dirX = Math.cos(angleRad).toFloat();
+        var dirY = Math.sin(angleRad).toFloat();
         if (!isRight) { dirX = -dirX; }
         var tipX = (pivotX + dirX * FLIPPER_LEN).toNumber();
         var tipY = (pivotY + dirY * FLIPPER_LEN).toNumber();

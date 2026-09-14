@@ -64,9 +64,10 @@ class BalanceBallView extends WatchUi.View {
     // Difficulty and speed used to be two separate menus, but a bigger
     // boundary (easier) with twitchy tilt response (harder) fought each
     // other, so one combined level now sets both together consistently.
-    function setLevel(boundaryFraction as Float, speedMultiplier as Float) as Void {
-        _boundaryFraction = boundaryFraction;
-        _speedMultiplier = speedMultiplier;
+    // level: [boundaryFraction, speedMultiplier]
+    function setLevel(level as Array<Float>) as Void {
+        _boundaryFraction = level[0];
+        _speedMultiplier = level[1];
         if (_width > 0) {
             layoutBoundary();
         }

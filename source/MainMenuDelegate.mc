@@ -18,33 +18,21 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
     // raising the requirement for everyone.
     function select(id as Symbol) as Void {
         _view.markPlayed(id);
+        if (selectTouchGame(id)) {
+            return;
+        }
         if (id == :item_pong) {
             var view = new PongView();
             WatchUi.pushView(view, new PongDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_2048) {
-            var view = new Game2048View();
-            WatchUi.pushView(view, new Game2048Delegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_flappy) {
             var view = new FlappyView();
             WatchUi.pushView(view, new FlappyDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_snake) {
-            var view = new SnakeView();
-            WatchUi.pushView(view, new SnakeDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_breakout) {
             var view = new BreakoutView();
             WatchUi.pushView(view, new BreakoutDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_tictactoe) {
-            var view = new TicTacToeView();
-            WatchUi.pushView(view, new TicTacToeDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_simon) {
-            var view = new SimonView();
-            WatchUi.pushView(view, new SimonDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_dino) {
             var view = new DinoView();
             WatchUi.pushView(view, new DinoDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_tetris) {
-            var view = new TetrisView();
-            WatchUi.pushView(view, new TetrisDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_balanceball) {
             var view = new BalanceBallView();
             WatchUi.pushView(view, new BalanceBallDelegate(view), WatchUi.SLIDE_LEFT);
@@ -57,9 +45,6 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         } else if (id == :item_asteroid) {
             var view = new AsteroidView();
             WatchUi.pushView(view, new AsteroidDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_draw) {
-            var view = new DrawView();
-            WatchUi.pushView(view, new DrawDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_gravityflip) {
             var view = new GravityFlipView();
             WatchUi.pushView(view, new GravityFlipDelegate(view), WatchUi.SLIDE_LEFT);
@@ -69,10 +54,44 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         } else if (id == :item_tiltmaze) {
             var view = new TiltMazeView();
             WatchUi.pushView(view, new TiltMazeDelegate(view), WatchUi.SLIDE_LEFT);
+        }
+    }
+
+    // Games in CustomMainMenuView.TOUCH_ONLY_GAMES. Their code is left out on
+    // low-memory non-touch devices (see monkey.jungle), where the menu never
+    // shows them and the empty fallback below is built instead.
+    (:touchGames)
+    private function selectTouchGame(id as Symbol) as Boolean {
+        if (id == :item_2048) {
+            var view = new Game2048View();
+            WatchUi.pushView(view, new Game2048Delegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_snake) {
+            var view = new SnakeView();
+            WatchUi.pushView(view, new SnakeDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_tictactoe) {
+            var view = new TicTacToeView();
+            WatchUi.pushView(view, new TicTacToeDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_simon) {
+            var view = new SimonView();
+            WatchUi.pushView(view, new SimonDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_tetris) {
+            var view = new TetrisView();
+            WatchUi.pushView(view, new TetrisDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_draw) {
+            var view = new DrawView();
+            WatchUi.pushView(view, new DrawDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_wordrush) {
             var view = new WordRushView();
             WatchUi.pushView(view, new WordRushDelegate(view), WatchUi.SLIDE_LEFT);
+        } else {
+            return false;
         }
+        return true;
+    }
+
+    (:noTouchGames)
+    private function selectTouchGame(id as Symbol) as Boolean {
+        return false;
     }
 
     function onTap(clickEvent as WatchUi.ClickEvent) as Boolean {

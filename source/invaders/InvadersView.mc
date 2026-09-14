@@ -34,7 +34,6 @@ class InvadersView extends WatchUi.View {
     private var _alienGridX as Float = 0.0;
     private var _alienGridY as Float = 0.0;
     private var _alienDir as Float = 1.0;
-    private var _alienSpeed as Float = 1.0;
     private var _alienStepTimer as Number = 0;
     private var _alienAnimFrame as Boolean = false;
 
@@ -54,7 +53,6 @@ class InvadersView extends WatchUi.View {
     private var _lives as Number = 3;
     private var _wave as Number = 1;
     private var _gameOver as Boolean = false;
-    private var _waveWon as Boolean = false;
     private var _speedMultiplier as Float = 1.0;
     private var _timer as Timer.Timer?;
 
@@ -99,7 +97,6 @@ class InvadersView extends WatchUi.View {
         _lives = 3;
         _wave = 1;
         _gameOver = false;
-        _waveWon = false;
         _bulletActive = false;
         _cannonX = (_width / 2.0) - (CANNON_W / 2.0);
         _bombX = [];
@@ -126,10 +123,8 @@ class InvadersView extends WatchUi.View {
         _alienGridY = 22.0 + (_wave - 1) * 4.0;
         if (_alienGridY > 50.0) { _alienGridY = 50.0; }
         _alienDir = 1.0;
-        _alienSpeed = (1.2 + (_wave - 1) * 0.2) * _speedMultiplier;
         _alienStepTimer = 0;
         _bombCooldown = 30;
-        _waveWon = false;
     }
 
     function moveCannon(dx as Float) as Void {
@@ -210,7 +205,8 @@ class InvadersView extends WatchUi.View {
         }
 
         // Alien movement
-        var stepInterval = (remaining * 1.5).toNumber() + 4;
+        var stepInterval = ((remaining * 1.5 + 4) / _speedMultiplier).toNumber();
+        if (stepInterval < 1) { stepInterval = 1; }
         _alienStepTimer += 1;
         if (_alienStepTimer >= stepInterval) {
             _alienStepTimer = 0;

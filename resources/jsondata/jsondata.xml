@@ -1,0 +1,3 @@
+<resources>
+    <jsonData id="WordDict" filename="words.json"/>
+</resources>

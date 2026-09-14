@@ -4,6 +4,7 @@ import Toybox.Timer;
 import Toybox.Lang;
 import Toybox.Math;
 
+(:touchGames)
 class SimonView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "simon_high";
@@ -53,9 +54,10 @@ class SimonView extends WatchUi.View {
 
     // startLength: how many steps the sequence begins with (harder skips the
     // warm-up). strikesAllowed: wrong taps tolerated before game over.
-    function setDifficulty(startLength as Number, strikesAllowed as Number) as Void {
-        _startLength = startLength;
-        _strikesAllowed = strikesAllowed;
+    // level: [startLength, strikesAllowed]
+    function setDifficulty(level as Array<Number>) as Void {
+        _startLength = level[0];
+        _strikesAllowed = level[1];
     }
 
     function setSpeedMultiplier(multiplier as Float) as Void {

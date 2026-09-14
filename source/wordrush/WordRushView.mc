@@ -6,6 +6,7 @@ import Toybox.Math;
 
 // Word Rush: spell as many valid 3 and 4-letter words as possible before time runs out!
 // Tap letter tiles in sequence, then tap SUBMIT.
+(:touchGames)
 class WordRushView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "wordrush_high";
@@ -14,100 +15,12 @@ class WordRushView extends WatchUi.View {
     private var _width as Number = 0;
     private var _height as Number = 0;
 
-    // Available letter sets: 4 letters each with many anagrams
-    private const LETTER_SETS = [
-        ["S", "T", "A", "R"],
-        ["P", "L", "A", "Y"],
-        ["G", "A", "M", "E"],
-        ["T", "I", "M", "E"],
-        ["W", "O", "R", "D"],
-        ["B", "E", "A", "T"],
-        ["F", "A", "S", "T"],
-        ["C", "A", "R", "T"],
-        ["S", "H", "I", "P"],
-        ["C", "O", "D", "E"],
-        ["F", "I", "R", "E"],
-        ["B", "O", "A", "T"],
-        ["B", "I", "R", "D"],
-        ["W", "I", "N", "D"],
-        ["F", "I", "S", "H"],
-        ["R", "O", "C", "K"],
-        ["R", "O", "A", "D"],
-        ["L", "O", "V", "E"],
-        ["G", "O", "A", "L"],
-        ["H", "O", "M", "E"],
-        ["K", "I", "N", "G"],
-        ["S", "O", "N", "G"],
-        ["R", "A", "C", "E"],
-        ["P", "A", "T", "H"],
-        ["T", "E", "A", "M"],
-        ["P", "L", "A", "N"],
-        ["G", "O", "L", "D"],
-        ["W", "A", "R", "P"],
-        ["C", "A", "R", "E"],
-        ["L", "E", "A", "P"],
-        ["P", "O", "S", "T"],
-        ["S", "P", "O", "T"],
-        ["S", "T", "O", "P"],
-        ["T", "A", "P", "E"],
-        ["P", "E", "A", "K"],
-        ["R", "A", "T", "E"]
-    ] as Array<Array<String> >;
+    // Letter sets packed 4 chars each: every set has many anagrams
+    private const LETTER_SETS = "STARPLAYGAMETIMEWORDBEATFASTCARTSHIPCODEFIREBOATBIRDWINDFISHROCKROADLOVEGOALHOMEKINGSONGRACEPATHTEAMPLANGOLDWARPCARELEAPPOSTSPOTSTOPTAPEPEAKRATE";
 
-    // Dictionary of common 3- and 4-letter words
-    private const DICTIONARY = [
-        "ACE", "ACT", "AGE", "AGO", "AIM", "AIR", "ALL", "AND", "ANY", "APE", "APT", "ARC", "ARE", "ARK", "ARM", "ART", "ASH", "ASK", "ATE", "AWE",
-        "BAD", "BAG", "BAN", "BAR", "BAT", "BAY", "BED", "BEE", "BEG", "BET", "BID", "BIG", "BIN", "BIT", "BOA", "BOB", "BOG", "BOW", "BOX", "BOY", "BUD", "BUG", "BUS", "BUT", "BUY", "BYE",
-        "CAB", "CAM", "CAN", "CAP", "CAR", "CAT", "COB", "COD", "COG", "CON", "COO", "COP", "COT", "COW", "CRY", "CUB", "CUP", "CUR", "CUT",
-        "DAB", "DAM", "DAY", "DEN", "DEW", "DID", "DIE", "DIG", "DIM", "DIN", "DIP", "DOE", "DOG", "DOT", "DRY", "DUB", "DUE", "DUG", "DYE",
-        "EAR", "EAT", "EGG", "EGO", "ELF", "ELM", "EMU", "END", "ERA", "EVE", "EYE",
-        "FAN", "FAR", "FAT", "FED", "FEE", "FEW", "FIG", "FIN", "FIR", "FIT", "FIX", "FLY", "FOE", "FOG", "FOR", "FOX", "FRY", "FUN", "FUR",
-        "GAG", "GAP", "GAS", "GEL", "GEM", "GET", "GIG", "GIN", "GLAD", "GNU", "GOD", "GOT", "GUM", "GUN", "GUT", "GUY", "GYM",
-        "HAD", "HAM", "HAS", "HAT", "HAY", "HEM", "HEN", "HER", "HEW", "HEX", "HID", "HIM", "HIP", "HIS", "HIT", "HOG", "HOP", "HOT", "HOW", "HUB", "HUG", "HUM", "HUT",
-        "ICE", "ICY", "ILL", "INK", "INN", "ION", "IRE", "IVY",
-        "JAM", "JAR", "JAW", "JAY", "JET", "JIG", "JOB", "JOG", "JOY", "JUG", "JUT",
-        "KEG", "KEY", "KID", "KIN", "KIT",
-        "LAB", "LAD", "LAP", "LAW", "LAY", "LED", "LEG", "LET", "LID", "LIE", "LIP", "LIT", "LOG", "LOT", "LOW",
-        "MAD", "MAN", "MAP", "MAT", "MAY", "MEN", "MET", "MID", "MIX", "MOP", "MUD", "MUG",
-        "NAG", "NAP", "NET", "NEW", "NIP", "NOD", "NOR", "NOT", "NOW", "NUT",
-        "OAK", "OAR", "OAT", "ODD", "OFF", "OFT", "OIL", "OLD", "ONE", "OPT", "ORE", "OUR", "OUT", "OWL", "OWN",
-        "PAD", "PAN", "PAR", "PAT", "PAW", "PAY", "PEA", "PEG", "PEN", "PER", "PET", "PEW", "PIE", "PIG", "PIN", "PIT", "PLY", "POD", "POP", "POT", "PRO", "PUB", "PUP", "PUT",
-        "RAG", "RAM", "RAN", "RAP", "RAT", "RAW", "RAY", "RED", "RIB", "RID", "RIG", "RIM", "RIP", "ROB", "ROD", "ROE", "ROT", "ROW", "RUB", "RUG", "RUN", "RUT", "RYE",
-        "SAC", "SAD", "SAG", "SAP", "SAT", "SAW", "SAY", "SEA", "SEE", "SET", "SEW", "SHE", "SHY", "SIN", "SIP", "SIR", "SIT", "SIX", "SKI", "SKY", "SLY", "SOB", "SOD", "SON", "SOP", "SOW", "SOY", "SPA", "SPY", "SUM", "SUN",
-        "TAB", "TAG", "TAN", "TAP", "TAR", "TEA", "TED", "TEN", "THE", "TIE", "TIN", "TIP", "TOE", "TON", "TOO", "TOP", "TOW", "TOY", "TRY", "TUB", "TUG", "TWO",
-        "URN", "USE",
-        "VAN", "VAT", "VET", "VIA", "VIE", "VOW",
-        "WAR", "WAS", "WAX", "WAY", "WEB", "WED", "WET", "WHO", "WHY", "WIG", "WIN", "WIT", "WOE", "WON", "WOW",
-        "YAK", "YAM", "YAP", "YAW", "YEA", "YES", "YET", "YEW", "YON", "YOU",
-        "ZIP", "ZOO",
-        // 4-letter words
-        "ACRE", "AIDE", "ALLY", "ALSO", "ARCH", "AREA", "ARMY", "ARTS", "AUNT", "AWAY",
-        "BABY", "BACK", "BAIT", "BAKE", "BALL", "BAND", "BANK", "BARE", "BARK", "BARN", "BASE", "BATH", "BEAK", "BEAM", "BEAN", "BEAR", "BEAT", "BEEF", "BEER", "BELL", "BELT", "BEND", "BEST", "BILL", "BIND", "BIRD", "BITE", "BLOW", "BLUE", "BOAT", "BODY", "BOIL", "BOLD", "BOMB", "BOND", "BONE", "BOOK", "BOOM", "BOOT", "BORE", "BORN", "BOSS", "BOTH", "BOWL", "BULK", "BURN", "BUSH", "BUSY",
-        "CAFE", "CAGE", "CAKE", "CALL", "CALM", "CAMP", "CANE", "CAPE", "CARD", "CARE", "CART", "CASE", "CASH", "CAST", "CAVE", "CELL", "CHEF", "CITY", "CLAP", "CLAW", "CLAY", "CLIP", "CLUB", "COAL", "COAT", "CODE", "COIN", "COLD", "COME", "COOK", "COOL", "COPE", "COPY", "CORD", "CORE", "CORN", "COST", "CRAB", "CREW", "CROP", "CROW", "CUBE", "CURE", "CURL",
-        "DARK", "DART", "DASH", "DATE", "DAWN", "DEAD", "DEAL", "DEAR", "DECK", "DEED", "DEEP", "DEER", "DESK", "DIAL", "DIRT", "DISC", "DISH", "DISK", "DIVE", "DOCK", "DOOR", "DOSE", "DOWN", "DRAW", "DROP", "DRUM", "DUCK", "DUST", "DUTY",
-        "EACH", "EARN", "EAST", "EASY", "EDGE", "ELSE", "ENVY", "EVEN", "EVER", "EVIL", "EXAM", "EXIT", "EYES",
-        "FACE", "FACT", "FADE", "FAIL", "FAIR", "FALL", "FAME", "FARM", "FAST", "FATE", "FEAR", "FEAT", "FEED", "FEEL", "FEET", "FILL", "FILM", "FIND", "FINE", "FIRE", "FIRM", "FISH", "FIST", "FLAG", "FLAT", "FLAW", "FLEA", "FLEW", "FLIP", "FLOW", "FOAM", "FOIL", "FOLD", "FOLK", "FOOD", "FOOL", "FOOT", "FORD", "FORK", "FORM", "FORT", "FOUL", "FOUR", "FOWL", "FREE", "FROG", "FROM", "FUEL", "FULL", "FUME", "FUND", "FURY", "FUSE",
-        "GAIN", "GAME", "GANG", "GATE", "GEAR", "GIFT", "GIRL", "GIVE", "GLAD", "GLOW", "GOAL", "GOAT", "GOLD", "GOLF", "GOOD", "GRAB", "GRAY", "GREW", "GRID", "GRIN", "GRIP", "GROW", "GULF",
-        "HAIR", "HALF", "HALL", "HALT", "HAND", "HANG", "HARD", "HARE", "HARM", "HATE", "HAVE", "HAWK", "HEAD", "HEAL", "HEAP", "HEAR", "HEAT", "HEEL", "HEIR", "HELD", "HELL", "HELP", "HERB", "HERD", "HERO", "HIDE", "HIGH", "HIKE", "HILL", "HINT", "HIRE", "HOLD", "HOLE", "HOLY", "HOME", "HOOK", "HOPE", "HORN", "HOSE", "HOST", "HOUR", "HUGE", "HUNT", "HURT",
-        "ICON", "IDEA", "IDLE", "INCH", "INTO", "IRON", "ITEM",
-        "JAZZ", "JEAN", "JOIN", "JOKE", "JUMP", "JUNE", "JURY", "JUST",
-        "KEEN", "KEEP", "KICK", "KILL", "KIND", "KING", "KISS", "KITE", "KNEE", "KNOT", "KNOW",
-        "LACE", "LACK", "LADY", "LAID", "LAKE", "LAMB", "LAMP", "LAND", "LANE", "LAST", "LATE", "LEAD", "LEAF", "LEAK", "LEAN", "LEAP", "LEFT", "LEND", "LENS", "LESS", "LIAR", "LICK", "LIFE", "LIFT", "LIKE", "LIME", "LINE", "LINK", "LION", "LIPS", "LIST", "LIVE", "LOAD", "LOAF", "LOAN", "LOCK", "LOGO", "LONG", "LOOK", "LOOP", "LORD", "LOSE", "LOSS", "LOST", "LOUD", "LOVE", "LUCK", "LUMP", "LUNG",
-        "MADE", "MAID", "MAIL", "MAIN", "MAKE", "MALE", "MALL", "MANE", "MANY", "MARK", "MARS", "MASK", "MASS", "MAST", "MATE", "MATH", "MAZE", "MEAL", "MEAN", "MEAT", "MEET", "MELT", "MEND", "MENU", "MESS", "MILE", "MILK", "MIND", "MINE", "MINT", "MISS", "MIST", "MOOD", "MOON", "MORE", "MOSS", "MOST", "MOTH", "MOVE", "MUCH", "MULE", "MUST", "MUTE",
-        "NAIL", "NAME", "NEAR", "NEAT", "NECK", "NEED", "NEST", "NEWS", "NEXT", "NICE", "NINE", "NODE", "NOON", "NOSE", "NOTE",
-        "OAKS", "OATH", "OBEY", "ODDS", "OGRE", "OILS", "OKAY", "OMIT", "ONCE", "ONES", "ONLY", "ONTO", "OPEN", "ORAL", "ORES", "OVAL", "OVEN", "OVER", "OWLS", "OWNS",
-        "PACE", "PACK", "PAGE", "PAID", "PAIN", "PAIR", "PALE", "PALM", "PANT", "PARK", "PART", "PASS", "PAST", "PATH", "PEAK", "PEAR", "PEEL", "PEER", "PEST", "PICK", "PILE", "PILL", "PINE", "PINK", "PIPE", "PITY", "PLAN", "PLAY", "PLOT", "PLUG", "POEM", "POET", "POLE", "POLL", "POND", "POOL", "POOR", "POPE", "PORK", "PORT", "POSE", "POST", "POUR", "PRAY", "PURE", "PUSH",
-        "QUIT", "QUIZ",
-        "RACE", "RACK", "RAFT", "RAGE", "RAID", "RAIL", "RAIN", "RANK", "RARE", "RATE", "READ", "REAL", "REAP", "REAR", "REED", "REEF", "REST", "RICE", "RICH", "RIDE", "RING", "RIOT", "RIPE", "RISE", "RISK", "ROAD", "ROAR", "ROBE", "ROCK", "RODE", "ROLE", "ROLL", "ROOF", "ROOM", "ROOT", "ROPE", "ROSE", "RUSH", "RUST",
-        "SAFE", "SAGE", "SAID", "SAIL", "SAKE", "SALE", "SALT", "SAME", "SAND", "SAVE", "SEAL", "SEAM", "SEAT", "SEED", "SEEK", "SEEM", "SEEN", "SELF", "SELL", "SEND", "SHED", "SHIP", "SHOE", "SHOP", "SHOT", "SHOW", "SHUT", "SICK", "SIDE", "SIGN", "SILK", "SING", "SINK", "SITE", "SIZE", "SKIN", "SKIP", "SLAP", "SLID", "SLIM", "SLIP", "SLOW", "SNAP", "SNOW", "SOAK", "SOAP", "SOAR", "SOCK", "SOFA", "SOIL", "SOLD", "SOLE", "SOLO", "SOME", "SONG", "SOON", "SORE", "SOUL", "SOUP", "SPAN", "SPIN", "SPIT", "SPOT", "STAR", "STAY", "STEM", "STEP", "STIR", "STOP", "SUCH", "SUIT", "SURE", "SURF", "SWAN", "SWIM",
-        "TAIL", "TAKE", "TALE", "TALK", "TALL", "TANK", "TAPE", "TASK", "TEAM", "TEAR", "TELL", "TENT", "TERM", "TEST", "TEXT", "THAT", "THEM", "THEN", "THEY", "THIN", "THIS", "THOU", "TICK", "TIDE", "TIDY", "TIED", "TILE", "TILL", "TIME", "TINY", "TIRE", "TOAD", "TOLL", "TONE", "TOOK", "TOOL", "TOPS", "TORE", "TORN", "TOSS", "TOUR", "TOWN", "TRAP", "TRAY", "TREE", "TRIP", "TRUE", "TUBE", "TUNE", "TURN", "TWIN", "TYPE",
-        "UNIT", "UPON", "URGE", "USED", "USER",
-        "VAIN", "VALE", "VARY", "VAST", "VEIL", "VEIN", "VENT", "VERY", "VEST", "VETO", "VICE", "VIEW", "VINE", "VOLE", "VOTE",
-        "WAGE", "WAIT", "WAKE", "WALK", "WALL", "WANT", "WARD", "WARM", "WARN", "WARP", "WARS", "WASH", "WASP", "WAVE", "WEAK", "WEAR", "WEED", "WEEK", "WELL", "WENT", "WEST", "WHAT", "WHEN", "WHOM", "WIDE", "WIFE", "WILD", "WILL", "WIND", "WINE", "WING", "WINK", "WIPE", "WIRE", "WISE", "WISH", "WITH", "WOLF", "WOOD", "WOOL", "WORD", "WORE", "WORK", "WORM", "WORN", "WRAP",
-        "YARD", "YARN", "YEAR", "YELL", "YOGA", "YOKE", "YOUR",
-        "ZEAL", "ZERO", "ZINC", "ZONE"
-    ] as Array<String>;
-
+    // Space-delimited 3/4-letter word list, loaded from resources only while
+    // the game is open so it doesn't count against the app's code memory.
+    private var _dict as String? = null;
     private var _currentLetters as Array<String>;
     private var _selectedIndices as Array<Number>;
     private var _foundWords as Array<String>;
@@ -174,8 +87,11 @@ class WordRushView extends WatchUi.View {
     }
 
     private function pickLetterSet() as Void {
-        var idx = (Math.rand() % LETTER_SETS.size()).abs();
-        _currentLetters = LETTER_SETS[idx];
+        var start = (Math.rand() % (LETTER_SETS.length() / 4)).abs() * 4;
+        _currentLetters = [];
+        for (var i = 0; i < 4; i++) {
+            _currentLetters.add(LETTER_SETS.substring(start + i, start + i + 1) as String);
+        }
         _selectedIndices = [];
     }
 
@@ -258,17 +174,14 @@ class WordRushView extends WatchUi.View {
     }
 
     private function isWordValid(word as String) as Boolean {
-        var i = 0;
-        while (i < DICTIONARY.size()) {
-            if (DICTIONARY[i].equals(word)) {
-                return true;
-            }
-            i++;
-        }
-        return false;
+        var dict = _dict;
+        return dict != null && dict.find(" " + word + " ") != null;
     }
 
     function onShow() as Void {
+        if (_dict == null) {
+            _dict = WatchUi.loadResource(Rez.JsonData.WordDict) as String;
+        }
         _timer = new Timer.Timer();
         _timer.start(method(:onTimerTick), 1000, true);
     }
@@ -278,6 +191,7 @@ class WordRushView extends WatchUi.View {
             _timer.stop();
             _timer = null;
         }
+        _dict = null;
     }
 
     function onTimerTick() as Void {

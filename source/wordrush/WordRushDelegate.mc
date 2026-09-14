@@ -1,6 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+(:touchGames)
 class WordRushDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as WordRushView;
@@ -17,7 +18,7 @@ class WordRushDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.WordRushMenu(), new WordRushMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, []);
         return true;
     }
 

@@ -63,7 +63,7 @@ class PongDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.PongMenu(), new PongMenuDelegate(_view), WatchUi.SLIDE_UP);
+        GameMenu.open(_view, [GameMenu.level(Rez.Strings.menu_label_difficulty, :setDifficulty, [[3.0, 1.5, 16, 0.6], [3.5, 2.2, 9, 0.35], [4.5, 3.0, 4, 0.15], [5.5, 4.5, 2, 0.05], [7.5, 6.0, 1, 0.0]]), GameMenu.speed([0.5, 0.7, 1.0, 1.5, 2.0])]);
         return true;
     }
 
