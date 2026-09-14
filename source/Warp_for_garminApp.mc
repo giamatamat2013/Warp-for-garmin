@@ -19,25 +19,11 @@ class Warp_for_garminApp extends Application.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() as [Views] or [Views, InputDelegates] {
-        var menu = new Rez.Menus.MainMenu();
-
-        // These games are tap/swipe-only; hide them on devices with no
-        // touchscreen rather than shipping a game that can't be controlled
-        // there. Pong, Flappy Bird and Breakout all have button fallbacks,
-        // so they stay available everywhere.
-        if (!System.getDeviceSettings().isTouchScreen) {
-            var touchOnlyGames = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris, :item_draw];
-            var i = 0;
-            while (i < touchOnlyGames.size()) {
-                var index = menu.findItemById(touchOnlyGames[i]);
-                if (index >= 0) {
-                    menu.deleteItem(index);
-                }
-                i++;
-            }
-        }
-
-        return [ menu, new MainMenuDelegate() ];
+        // Custom icon menu instead of the stock Menu2 list - see
+        // CustomMainMenuView for the per-device touch-only game filtering
+        // (previously done here) and common/GameIcons.mc for the icons.
+        var view = new CustomMainMenuView();
+        return [ view, new CustomMainMenuDelegate(view) ];
     }
 
 }

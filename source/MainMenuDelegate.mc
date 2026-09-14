@@ -1,10 +1,14 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
+class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
 
-    function initialize() {
-        Menu2InputDelegate.initialize();
+    private var _view as CustomMainMenuView;
+    private var _lastDragY as Number = 0;
+
+    function initialize(view as CustomMainMenuView) {
+        BehaviorDelegate.initialize();
+        _view = view;
     }
 
     // Add a game here: give it a menu-item in resources/menus/menu.xml, then a
@@ -12,8 +16,7 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
     // device has (a higher API level, a touchscreen, ...), hide its menu-item
     // for unsupported devices in Warp_for_garminApp.getInitialView() instead of
     // raising the requirement for everyone.
-    function onSelect(item as WatchUi.MenuItem) as Void {
-        var id = item.getId();
+    function select(id as Symbol) as Void {
         if (id == :item_pong) {
             var view = new PongView();
             WatchUi.pushView(view, new PongDelegate(view), WatchUi.SLIDE_LEFT);
@@ -54,6 +57,43 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
             var view = new DrawView();
             WatchUi.pushView(view, new DrawDelegate(view), WatchUi.SLIDE_LEFT);
         }
+    }
+
+    function onTap(clickEvent as WatchUi.ClickEvent) as Boolean {
+        var coords = clickEvent.getCoordinates();
+        var row = _view.rowAt(coords[0], coords[1]);
+        if (row >= 0) {
+            _view.setSelected(row);
+            select(_view.idAt(row));
+            return true;
+        }
+        return false;
+    }
+
+    function onDrag(dragEvent as WatchUi.DragEvent) as Boolean {
+        var y = dragEvent.getCoordinates()[1];
+        var type = dragEvent.getType();
+        if (type == WatchUi.DRAG_TYPE_START) {
+            _lastDragY = y;
+        } else {
+            _view.scroll(_lastDragY - y);
+            _lastDragY = y;
+        }
+        return true;
+    }
+
+    function onKey(keyEvent as WatchUi.KeyEvent) as Boolean {
+        var key = keyEvent.getKey();
+        if (key == WatchUi.KEY_UP) {
+            _view.moveSelection(-1);
+        } else if (key == WatchUi.KEY_DOWN) {
+            _view.moveSelection(1);
+        } else if (key == WatchUi.KEY_ENTER) {
+            select(_view.idAt(_view.selectedIndex()));
+        } else {
+            return false;
+        }
+        return true;
     }
 
 }
