@@ -3,18 +3,18 @@ import Toybox.WatchUi;
 import Toybox.Lang;
 import Toybox.System;
 
-// Custom main menu: a scrollable list of rows, each with a hand-drawn icon
-// (see common/GameIcons.mc) next to the game name. Connect IQ's built-in
-// Menu2 only shows plain text rows, so this view + CustomMainMenuDelegate
-// replace it to give every game a distinct visual identity.
+// Custom main menu: a scrollable two-column grid of game tiles.
 //
 // Add a game here: add {:id => :item_x, :label => "X"} to buildItems() below
 // (it's filtered out automatically for non-touch devices if listed in
-// TOUCH_ONLY_GAMES), then handle :item_x in CustomMainMenuDelegate.onSelect().
+// TOUCH_ONLY_GAMES), then handle :item_x in CustomMainMenuDelegate.select().
 class CustomMainMenuView extends WatchUi.View {
 
-    private const ROW_HEIGHT = 60;
-    private const ICON_BOX = 44;
+    private const COLUMNS = 2;
+    private const TILE_HEIGHT = 78;
+    private const ICON_BOX = 38;
+    private const GRID_MARGIN = 4;
+    private const GRID_GAP = 4;
     private const TOUCH_ONLY_GAMES = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris, :item_draw];
 
     private var _items as Array<Dictionary> = [];
@@ -77,8 +77,7 @@ class CustomMainMenuView extends WatchUi.View {
         return _items[index][:id] as Symbol;
     }
 
-    // Moves the selection by delta rows (negative = up), clamping at the
-    // ends, and scrolls just enough to keep the new row fully on screen.
+    // Moves the selection by tile index and keeps the selected tile visible.
     function moveSelection(delta as Number) as Void {
         var next = _selected + delta;
         if (next < 0) {
@@ -91,17 +90,19 @@ class CustomMainMenuView extends WatchUi.View {
         WatchUi.requestUpdate();
     }
 
-    // Returns the row index at the given screen coordinates, or -1 if the
-    // tap landed outside the list (used for touch selection).
+    // Returns the tile index at screen coordinates, or -1 outside the grid.
     function rowAt(x as Number, y as Number) as Number {
-        if (x < 0 || x > _width) {
+        var tileWidth = (_width - GRID_MARGIN * 2 - GRID_GAP) / COLUMNS;
+        var column = ((x - GRID_MARGIN) / (tileWidth + GRID_GAP)).toNumber();
+        var row = ((y + _scrollY) / TILE_HEIGHT).toNumber();
+        if (x < GRID_MARGIN || x >= _width - GRID_MARGIN || y < 0 || y > _height || column < 0 || column >= COLUMNS || row < 0) {
             return -1;
         }
-        var row = ((y + _scrollY) / ROW_HEIGHT).toNumber();
-        if (row < 0 || row >= _items.size()) {
+        var index = row * COLUMNS + column;
+        if (index >= _items.size()) {
             return -1;
         }
-        return row;
+        return index;
     }
 
     function setSelected(index as Number) as Void {
@@ -119,8 +120,8 @@ class CustomMainMenuView extends WatchUi.View {
     }
 
     private function ensureVisible() as Void {
-        var top = _selected * ROW_HEIGHT;
-        var bottom = top + ROW_HEIGHT;
+        var top = (_selected / COLUMNS).toNumber() * TILE_HEIGHT;
+        var bottom = top + TILE_HEIGHT;
         if (top < _scrollY) {
             _scrollY = top;
         } else if (bottom > _scrollY + _height) {
@@ -130,7 +131,8 @@ class CustomMainMenuView extends WatchUi.View {
     }
 
     private function clampScroll() as Void {
-        var maxScroll = _items.size() * ROW_HEIGHT - _height;
+        var totalRows = ((_items.size() + COLUMNS - 1) / COLUMNS).toNumber();
+        var maxScroll = totalRows * TILE_HEIGHT - _height;
         if (maxScroll < 0) {
             maxScroll = 0;
         }
@@ -147,9 +149,9 @@ class CustomMainMenuView extends WatchUi.View {
 
         var i = 0;
         while (i < _items.size()) {
-            var rowTop = i * ROW_HEIGHT - _scrollY;
-            if (rowTop + ROW_HEIGHT >= 0 && rowTop <= _height) {
-                drawRow(dc, i, rowTop);
+            var rowTop = (i / COLUMNS).toNumber() * TILE_HEIGHT - _scrollY;
+            if (rowTop + TILE_HEIGHT >= 0 && rowTop <= _height) {
+                drawTile(dc, i, rowTop);
             }
             i++;
         }
@@ -157,27 +159,34 @@ class CustomMainMenuView extends WatchUi.View {
         drawScrollbar(dc);
     }
 
-    private function drawRow(dc as Dc, index as Number, rowTop as Number) as Void {
+    private function drawTile(dc as Dc, index as Number, rowTop as Number) as Void {
         var item = _items[index];
         var isSelected = (index == _selected);
+        var tileWidth = (_width - GRID_MARGIN * 2 - GRID_GAP) / COLUMNS;
+        var column = index % COLUMNS;
+        var tileX = GRID_MARGIN + column * (tileWidth + GRID_GAP);
 
         if (isSelected) {
             dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_TRANSPARENT);
-            dc.fillRoundedRectangle(4, rowTop + 2, _width - 8, ROW_HEIGHT - 4, 10);
+            dc.fillRoundedRectangle(tileX, rowTop + 2, tileWidth, TILE_HEIGHT - 4, 8);
+        } else {
+            dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
+            dc.drawRoundedRectangle(tileX, rowTop + 2, tileWidth, TILE_HEIGHT - 4, 8);
         }
 
         var iconColor = isSelected ? Graphics.COLOR_WHITE : Graphics.COLOR_LT_GRAY;
-        var iconX = 14;
-        var iconY = rowTop + (ROW_HEIGHT - ICON_BOX) / 2;
+        var iconX = tileX + (tileWidth - ICON_BOX) / 2;
+        var iconY = rowTop + 8;
         GameIcons.draw(dc, item[:id] as Symbol, iconX, iconY, ICON_BOX, iconColor);
 
         var textColor = isSelected ? Graphics.COLOR_WHITE : Graphics.COLOR_LT_GRAY;
         dc.setColor(textColor, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(iconX + ICON_BOX + 14, rowTop + ROW_HEIGHT / 2, Graphics.FONT_MEDIUM, item[:label] as String, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(tileX + tileWidth / 2, rowTop + TILE_HEIGHT - 18, Graphics.FONT_XTINY, item[:label] as String, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     private function drawScrollbar(dc as Dc) as Void {
-        var totalHeight = _items.size() * ROW_HEIGHT;
+        var totalRows = ((_items.size() + COLUMNS - 1) / COLUMNS).toNumber();
+        var totalHeight = totalRows * TILE_HEIGHT;
         if (totalHeight <= _height) {
             return;
         }

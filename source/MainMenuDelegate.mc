@@ -85,8 +85,12 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
     function onKey(keyEvent as WatchUi.KeyEvent) as Boolean {
         var key = keyEvent.getKey();
         if (key == WatchUi.KEY_UP) {
-            _view.moveSelection(-1);
+            _view.moveSelection(-2);
         } else if (key == WatchUi.KEY_DOWN) {
+            _view.moveSelection(2);
+        } else if (key == WatchUi.KEY_LEFT) {
+            _view.moveSelection(-1);
+        } else if (key == WatchUi.KEY_RIGHT) {
             _view.moveSelection(1);
         } else if (key == WatchUi.KEY_ENTER) {
             select(_view.idAt(_view.selectedIndex()));
