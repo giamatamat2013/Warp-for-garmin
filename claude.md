@@ -39,7 +39,8 @@ Current default discovery order:
 22. Balance Ball
 23. Reversi
 24. Checkers
-25. Tic-Tac-Toe
+25. Chess
+26. Tic-Tac-Toe
 
 If the new game is more appealing to a new user than an existing entry, adjust the priorities of the affected games so the order remains intentional.
 

@@ -123,6 +123,9 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         } else if (id == :item_checkers) {
             var view = new CheckersView();
             WatchUi.pushView(view, new CheckersDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_chess) {
+            var view = new ChessView();
+            WatchUi.pushView(view, new ChessDelegate(view), WatchUi.SLIDE_LEFT);
         } else {
             return false;
         }
