@@ -7,6 +7,7 @@ import Toybox.Math;
 // Pinball: bounce the ball off two flippers to hit bumpers and score.
 // LEFT key / left-side tap controls the left flipper; RIGHT key / right-side
 // tap controls the right flipper. Ball launches automatically on game start.
+(:heavyGames)
 class PinballView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "pinball_high";

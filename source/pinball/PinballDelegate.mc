@@ -1,6 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+(:heavyGames)
 class PinballDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as PinballView;

@@ -12,6 +12,15 @@ import Toybox.Lang;
 // CustomMainMenuDelegate.select().
 module Games {
 
+    // Whether this build includes the :heavyGames-annotated games (Pinball,
+    // Invaders - the largest always-on games). False on the lowest-memory
+    // devices, where monkey.jungle excludes that code entirely to fit the
+    // 96KB/128KB limit; see CustomMainMenuView and MainMenuDelegate.
+    (:heavyGames)
+    const HAS_HEAVY_GAMES = true;
+    (:noHeavyGames)
+    const HAS_HEAVY_GAMES = false;
+
     const IDS = [:item_draw, :item_breakout, :item_invaders, :item_racing, :item_gravityflip,
         :item_asteroid, :item_pinball, :item_tetris, :item_2048, :item_wordrush, :item_flappy,
         :item_dino, :item_tiltmaze, :item_pong, :item_snake, :item_simon, :item_balanceball,

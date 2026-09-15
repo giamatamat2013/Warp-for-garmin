@@ -21,6 +21,9 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         if (selectTouchGame(id)) {
             return;
         }
+        if (selectHeavyGame(id)) {
+            return;
+        }
         if (id == :item_pong) {
             var view = new PongView();
             WatchUi.pushView(view, new PongDelegate(view), WatchUi.SLIDE_LEFT);
@@ -36,9 +39,6 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         } else if (id == :item_balanceball) {
             var view = new BalanceBallView();
             WatchUi.pushView(view, new BalanceBallDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_invaders) {
-            var view = new InvadersView();
-            WatchUi.pushView(view, new InvadersDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_racing) {
             var view = new RacingView();
             WatchUi.pushView(view, new RacingDelegate(view), WatchUi.SLIDE_LEFT);
@@ -48,13 +48,32 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         } else if (id == :item_gravityflip) {
             var view = new GravityFlipView();
             WatchUi.pushView(view, new GravityFlipDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_pinball) {
-            var view = new PinballView();
-            WatchUi.pushView(view, new PinballDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_tiltmaze) {
             var view = new TiltMazeView();
             WatchUi.pushView(view, new TiltMazeDelegate(view), WatchUi.SLIDE_LEFT);
         }
+    }
+
+    // Games in Games.HAS_HEAVY_GAMES (currently Pinball, Invaders - the
+    // largest always-on games). Their code is left out on the lowest-memory
+    // devices (see monkey.jungle) to keep the app fitting in 96KB/128KB.
+    (:heavyGames)
+    private function selectHeavyGame(id as Symbol) as Boolean {
+        if (id == :item_pinball) {
+            var view = new PinballView();
+            WatchUi.pushView(view, new PinballDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_invaders) {
+            var view = new InvadersView();
+            WatchUi.pushView(view, new InvadersDelegate(view), WatchUi.SLIDE_LEFT);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    (:noHeavyGames)
+    private function selectHeavyGame(id as Symbol) as Boolean {
+        return false;
     }
 
     // Games in CustomMainMenuView.TOUCH_ONLY_GAMES. Their code is left out on

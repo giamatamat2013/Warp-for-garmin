@@ -7,6 +7,7 @@ import Toybox.Math;
 // Space Invaders: defend Earth from marching alien invaders!
 // Move cannon with LEFT/RIGHT or drag, press ENTER or tap to fire missiles.
 // Invaders march horizontally, drop down on edges, and drop bombs.
+(:heavyGames)
 class InvadersView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "invaders_high";

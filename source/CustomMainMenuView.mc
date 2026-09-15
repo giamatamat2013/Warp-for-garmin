@@ -15,6 +15,8 @@ class CustomMainMenuView extends WatchUi.View {
     private const GRID_MARGIN = 4;
     private const GRID_GAP = 4;
     private const TOUCH_ONLY_GAMES = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris, :item_draw, :item_wordrush];
+    // Kept in sync with the (:heavyGames) annotation - see Games.HAS_HEAVY_GAMES.
+    private const HEAVY_GAMES = [:item_pinball, :item_invaders];
 
     private var _items as Array<Number> = [];   // indices into Games, in display order
     private var _labels as Array<String> = [];  // parallel to Games.IDS
@@ -29,7 +31,8 @@ class CustomMainMenuView extends WatchUi.View {
         var touch = System.getDeviceSettings().isTouchScreen;
         for (var i = 0; i < labelIds.size(); i++) {
             _labels.add(WatchUi.loadResource(labelIds[i]) as String);
-            if (touch || TOUCH_ONLY_GAMES.indexOf(Games.IDS[i]) < 0) {
+            if ((touch || TOUCH_ONLY_GAMES.indexOf(Games.IDS[i]) < 0) &&
+                (Games.HAS_HEAVY_GAMES || HEAVY_GAMES.indexOf(Games.IDS[i]) < 0)) {
                 _items.add(i);
             }
         }
