@@ -54,14 +54,14 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         }
     }
 
-    // Games in Games.HAS_HEAVY_GAMES (currently Pinball, Invaders - the
+    // Games in Games.HAS_HEAVY_GAMES (currently Bowling, Invaders - the
     // largest always-on games). Their code is left out on the lowest-memory
     // devices (see monkey.jungle) to keep the app fitting in 96KB/128KB.
     (:heavyGames)
     private function selectHeavyGame(id as Symbol) as Boolean {
-        if (id == :item_pinball) {
-            var view = new PinballView();
-            WatchUi.pushView(view, new PinballDelegate(view), WatchUi.SLIDE_LEFT);
+        if (id == :item_bowling) {
+            var view = new BowlingView();
+            WatchUi.pushView(view, new BowlingDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_invaders) {
             var view = new InvadersView();
             WatchUi.pushView(view, new InvadersDelegate(view), WatchUi.SLIDE_LEFT);

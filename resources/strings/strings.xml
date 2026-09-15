@@ -16,7 +16,7 @@
     <string id="game_draw">Draw</string>
     <string id="game_gravityflip">Gravity Flip</string>
     <string id="game_asteroid">Asteroid Dodge</string>
-    <string id="game_pinball">Pinball</string>
+    <string id="game_bowling">Bowling</string>
     <string id="game_tiltmaze">Tilt Maze</string>
     <string id="game_wordrush">Word Rush</string>
     <string id="game_memorymatch">Memory Match</string>

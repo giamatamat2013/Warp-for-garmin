@@ -32,7 +32,7 @@ module GameIcons {
         "Q;3?N4GC:93CK93C:L3CKL3",  // racing
         "R35N4R3KN4R>>88L8<8ILM<MI",  // gravityflip
         "C:84CL<6P4CC;PCMJP",  // asteroid
-        "r33NOC=<3CH<3CCB3L9M@KLLMEK",  // pinball
+        "CC62C><2CH<2CCL5",  // bowling
         "r22RRC:L4CCL4CLL4",  // connect4
         "R=;99RF;99R4D99R=D99",  // tetris
         "r22@@rF4<<r6H88rDD@@",  // 2048

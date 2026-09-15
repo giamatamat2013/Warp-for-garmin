@@ -17,22 +17,28 @@ Current default discovery order:
 
 1. Draw
 2. Breakout
-3. Space Invaders
-4. Racing
-5. Gravity Flip
-6. Asteroid Dodge
-7. Pinball
-8. Tetris
-9. 2048
-10. Word Rush
-11. Flappy Bird
-12. Dino Runner
-13. Tilt Maze
-14. Pong
-15. Snake
-16. Simon
-17. Balance Ball
-18. Tic-Tac-Toe
+3. Memory Match
+4. Space Invaders
+5. Whack-a-Mole
+6. Racing
+7. Gravity Flip
+8. Asteroid Dodge
+9. Bowling
+10. Connect Four
+11. Tetris
+12. 2048
+13. Minesweeper
+14. Word Rush
+15. Flappy Bird
+16. Dino Runner
+17. Tilt Maze
+18. 15 Puzzle
+19. Pong
+20. Snake
+21. Simon
+22. Balance Ball
+23. Reversi
+24. Tic-Tac-Toe
 
 If the new game is more appealing to a new user than an existing entry, adjust the priorities of the affected games so the order remains intentional.
 

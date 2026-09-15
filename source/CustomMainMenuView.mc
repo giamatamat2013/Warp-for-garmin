@@ -16,7 +16,7 @@ class CustomMainMenuView extends WatchUi.View {
     private const GRID_GAP = 4;
     private const TOUCH_ONLY_GAMES = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris, :item_draw, :item_wordrush];
     // Kept in sync with the (:heavyGames) annotation - see Games.HAS_HEAVY_GAMES.
-    private const HEAVY_GAMES = [:item_pinball, :item_invaders];
+    private const HEAVY_GAMES = [:item_bowling, :item_invaders];
 
     private var _items as Array<Number> = [];   // indices into Games, in display order
     private var _labels as Array<String> = [];  // parallel to Games.IDS

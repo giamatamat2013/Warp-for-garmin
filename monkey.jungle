@@ -6,7 +6,7 @@ project.manifest = manifest.xml
 # every other device builds them and drops the empty fallback (:noTouchGames).
 #
 # Heavy games (see CustomMainMenuView.HEAVY_GAMES / Games.HAS_HEAVY_GAMES) -
-# currently Pinball and Invaders, the two largest always-on games - are the
+# currently Bowling and Invaders, the two largest always-on games - are the
 # same idea: on the lowest-memory devices their code is left out of the
 # build entirely (:heavyGames) instead of just hidden at runtime, so the
 # app still fits; every other device builds them normally and drops the
