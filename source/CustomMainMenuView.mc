@@ -14,7 +14,7 @@ class CustomMainMenuView extends WatchUi.View {
     private const ICON_BOX = 38;
     private const GRID_MARGIN = 4;
     private const GRID_GAP = 4;
-    private const TOUCH_ONLY_GAMES = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris, :item_draw, :item_wordrush];
+    private const TOUCH_ONLY_GAMES = [:item_2048, :item_snake, :item_tictactoe, :item_simon, :item_tetris, :item_draw, :item_wordrush, :item_checkers];
     // Kept in sync with the (:heavyGames) annotation - see Games.HAS_HEAVY_GAMES.
     private const HEAVY_GAMES = [:item_bowling, :item_invaders];
 

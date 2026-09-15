@@ -120,6 +120,9 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         } else if (id == :item_reversi) {
             var view = new ReversiView();
             WatchUi.pushView(view, new ReversiDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_checkers) {
+            var view = new CheckersView();
+            WatchUi.pushView(view, new CheckersDelegate(view), WatchUi.SLIDE_LEFT);
         } else {
             return false;
         }

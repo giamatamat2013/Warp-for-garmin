@@ -25,6 +25,7 @@
     <string id="game_minesweeper">Minesweeper</string>
     <string id="game_slidepuzzle">15 Puzzle</string>
     <string id="game_reversi">Reversi</string>
+    <string id="game_checkers">Checkers</string>
 
     <string id="menu_label_difficulty">Difficulty</string>
     <string id="menu_label_gap_size">Gap Size</string>

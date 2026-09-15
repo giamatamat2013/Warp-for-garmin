@@ -25,14 +25,14 @@ module Games {
         :item_racing, :item_gravityflip, :item_asteroid, :item_bowling, :item_connect4,
         :item_tetris, :item_2048, :item_minesweeper, :item_wordrush, :item_flappy, :item_dino,
         :item_tiltmaze, :item_slidepuzzle, :item_pong, :item_snake, :item_simon,
-        :item_balanceball, :item_reversi, :item_tictactoe];
+        :item_balanceball, :item_reversi, :item_checkers, :item_tictactoe];
 
     // Stable storage keys for recent-play tracking; never rename.
     const KEYS = ["draw", "breakout", "memorymatch", "invaders", "whack",
         "racing", "gravityflip", "asteroid", "bowling", "connect4",
         "tetris", "2048", "minesweeper", "wordrush", "flappy", "dino",
         "tiltmaze", "slidepuzzle", "pong", "snake", "simon",
-        "balanceball", "reversi", "tictactoe"];
+        "balanceball", "reversi", "checkers", "tictactoe"];
 
     function labels() as Array<ResourceId> {
         return [Rez.Strings.game_draw, Rez.Strings.game_breakout, Rez.Strings.game_memorymatch,
@@ -42,6 +42,7 @@ module Games {
             Rez.Strings.game_minesweeper, Rez.Strings.game_wordrush, Rez.Strings.game_flappy,
             Rez.Strings.game_dino, Rez.Strings.game_tiltmaze, Rez.Strings.game_slidepuzzle,
             Rez.Strings.game_pong, Rez.Strings.game_snake, Rez.Strings.game_simon,
-            Rez.Strings.game_balanceball, Rez.Strings.game_reversi, Rez.Strings.game_tictactoe];
+            Rez.Strings.game_balanceball, Rez.Strings.game_reversi, Rez.Strings.game_checkers,
+            Rez.Strings.game_tictactoe];
     }
 }
