@@ -19,6 +19,12 @@
     <string id="game_pinball">Pinball</string>
     <string id="game_tiltmaze">Tilt Maze</string>
     <string id="game_wordrush">Word Rush</string>
+    <string id="game_memorymatch">Memory Match</string>
+    <string id="game_whack">Whack-a-Mole</string>
+    <string id="game_connect4">Connect Four</string>
+    <string id="game_minesweeper">Minesweeper</string>
+    <string id="game_slidepuzzle">15 Puzzle</string>
+    <string id="game_reversi">Reversi</string>
 
     <string id="menu_label_difficulty">Difficulty</string>
     <string id="menu_label_gap_size">Gap Size</string>

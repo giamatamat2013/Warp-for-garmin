@@ -102,6 +102,24 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         } else if (id == :item_wordrush) {
             var view = new WordRushView();
             WatchUi.pushView(view, new WordRushDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_memorymatch) {
+            var view = new MemoryMatchView();
+            WatchUi.pushView(view, new MemoryMatchDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_whack) {
+            var view = new WhackView();
+            WatchUi.pushView(view, new WhackDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_connect4) {
+            var view = new ConnectFourView();
+            WatchUi.pushView(view, new ConnectFourDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_minesweeper) {
+            var view = new MinesweeperView();
+            WatchUi.pushView(view, new MinesweeperDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_slidepuzzle) {
+            var view = new SlidePuzzleView();
+            WatchUi.pushView(view, new SlidePuzzleDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_reversi) {
+            var view = new ReversiView();
+            WatchUi.pushView(view, new ReversiDelegate(view), WatchUi.SLIDE_LEFT);
         } else {
             return false;
         }

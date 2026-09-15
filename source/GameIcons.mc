@@ -26,21 +26,27 @@ module GameIcons {
     const ICONS = [
         "P56Q;FJ7O<?KP36Q;F<M",  // draw
         "R1294R;294RE294R1794R;794RE794CCG2R;P?3",  // breakout
+        "Q22??3QC2??3Q2C??3QCC??3",  // memorymatch
         "Q86D=3L=6;3LG6I3R8C43RHC43KC>;2CF;2WQ;L?42RAI33",  // invaders
+        "c8L6cCL6cNL6CCD7",  // whack
         "Q;3?N4GC:93CK93C:L3CKL3",  // racing
         "R35N4R3KN4R>>88L8<8ILM<MI",  // gravityflip
         "C:84CL<6P4CC;PCMJP",  // asteroid
         "r33NOC=<3CH<3CCB3L9M@KLLMEK",  // pinball
+        "r22RRC:L4CCL4CLL4",  // connect4
         "R=;99RF;99R4D99R=D99",  // tetris
         "r22@@rF4<<r6H88rDD@@",  // 2048
+        "L>2>TLH2HTL2>T>L2HTHCCC5",  // minesweeper
         "r22@@rD2@@r2D@@rDD@@L5:>:LG:P:L5L>LLGLPL",  // wordrush
         "R308<R3I8<CIA6P3O?UAOD",  // flappy
         "R7;?<RC399R9G49RBG49P37=1;7B",  // dino
         "r33NNL3=F=L?=?HL?HRHC983",  // tiltmaze
+        "Q22@@2QD2@@2Q2D@@2",  // slidepuzzle
         "R2;5?RN;5?CCC3",  // pong
         "Q0G662Q9G662Q9;662QB;662QBG662QMG662CR:3",  // snake
         "C<<5CJ<5C<J5CJJ5",  // simon
         "L4JQEP3?GFFCPCC=5",  // balanceball
+        "r22RRKC<<5WCJ<5C<J5KCJJ5W",  // reversi
         "L<2<SLI2ISL2<S<L2ISIL33;;L;33;cNN4"  // tictactoe
     ];
 
