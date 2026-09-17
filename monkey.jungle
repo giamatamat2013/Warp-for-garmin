@@ -1,9 +1,10 @@
 project.manifest = manifest.xml
 
 # Touch-only games (see CustomMainMenuView.TOUCH_ONLY_GAMES) are hidden on
-# non-touch devices anyway. On 96KB non-touch devices their code is left out
-# of the build entirely (:touchGames) so the rest of the app fits in memory;
-# every other device builds them and drops the empty fallback (:noTouchGames).
+# non-touch devices anyway. On low-memory non-touch devices their code is left
+# out of the build entirely (:touchGames) so the rest of the app fits in
+# memory; every other device builds them and drops the empty fallback
+# (:noTouchGames).
 #
 # Heavy games (see CustomMainMenuView.HEAVY_GAMES / Games.HAS_HEAVY_GAMES) -
 # currently Bowling and Invaders, the two largest always-on games - are the
@@ -11,9 +12,25 @@ project.manifest = manifest.xml
 # build entirely (:heavyGames) instead of just hidden at runtime, so the
 # app still fits; every other device builds them normally and drops the
 # empty fallback (:noHeavyGames).
-base.excludeAnnotations = noTouchGames;noHeavyGames
-descentg1.excludeAnnotations = touchGames;heavyGames
-instinct2.excludeAnnotations = touchGames;heavyGames
-instinct2s.excludeAnnotations = touchGames;heavyGames
-instinct2x.excludeAnnotations = touchGames;heavyGames
-instinctcrossover.excludeAnnotations = touchGames;heavyGames
+#
+# Big games (see CustomMainMenuView.BIG_GAMES / Games.HAS_BIG_GAMES) -
+# currently Chess and Checkers, touch-only games too large for 128KB devices - are left
+# out (:bigGames) on every 128KB-or-smaller device, touch or not.
+base.excludeAnnotations = noTouchGames;noHeavyGames;noBigGames
+# 128KB touch device: keep touch games, drop the big and heavy ones.
+venusq.excludeAnnotations = noTouchGames;heavyGames;bigGames
+# 128KB non-touch devices: touch games would be hidden anyway, so drop their code.
+enduro.excludeAnnotations = touchGames;noHeavyGames;bigGames
+fenix6.excludeAnnotations = touchGames;noHeavyGames;bigGames
+fenix6s.excludeAnnotations = touchGames;noHeavyGames;bigGames
+fr245.excludeAnnotations = touchGames;noHeavyGames;bigGames
+fr55.excludeAnnotations = touchGames;noHeavyGames;bigGames
+instinct3solar45mm.excludeAnnotations = touchGames;noHeavyGames;bigGames
+instincte40mm.excludeAnnotations = touchGames;noHeavyGames;bigGames
+instincte45mm.excludeAnnotations = touchGames;noHeavyGames;bigGames
+# 96KB non-touch devices: also drop the heavy games.
+descentg1.excludeAnnotations = touchGames;heavyGames;bigGames
+instinct2.excludeAnnotations = touchGames;heavyGames;bigGames
+instinct2s.excludeAnnotations = touchGames;heavyGames;bigGames
+instinct2x.excludeAnnotations = touchGames;heavyGames;bigGames
+instinctcrossover.excludeAnnotations = touchGames;heavyGames;bigGames

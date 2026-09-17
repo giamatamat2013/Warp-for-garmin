@@ -21,6 +21,13 @@ module Games {
     (:noHeavyGames)
     const HAS_HEAVY_GAMES = false;
 
+    // Whether this build includes the :bigGames-annotated touch games (Chess, Checkers).
+    // False on 128KB devices, where they don't fit alongside everything else.
+    (:bigGames)
+    const HAS_BIG_GAMES = true;
+    (:noBigGames)
+    const HAS_BIG_GAMES = false;
+
     const IDS = [:item_draw, :item_breakout, :item_memorymatch, :item_invaders, :item_whack,
         :item_racing, :item_gravityflip, :item_asteroid, :item_bowling, :item_connect4,
         :item_tetris, :item_2048, :item_minesweeper, :item_wordrush, :item_flappy, :item_dino,

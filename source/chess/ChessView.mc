@@ -4,7 +4,7 @@ import Toybox.Lang;
 import Toybox.Math;
 import Toybox.Timer;
 
-(:touchGames)
+(:bigGames)
 class ChessView extends WatchUi.View {
 
     private const EMPTY = 0;
@@ -93,6 +93,7 @@ class ChessView extends WatchUi.View {
     private var _destinations as Array<Number> = [];
     private var _lastFrom as Number = -1;
     private var _lastTo as Number = -1;
+    private var _cursor as Number = -1;
 
     private var _timer as Timer.Timer?;
     private var _aiPhase as Number = AI_IDLE;
@@ -145,6 +146,7 @@ class ChessView extends WatchUi.View {
         _destinations = [];
         _lastFrom = -1;
         _lastTo = -1;
+        _cursor = -1;
         _aiPhase = AI_IDLE;
         _aiCandidates = [];
         _aiBestMove = null;
@@ -525,6 +527,7 @@ class ChessView extends WatchUi.View {
             return;
         }
         var idx = row * SIZE + col;
+        _cursor = -1;
 
         if (idx == _selected) {
             clearSelection();
@@ -539,6 +542,67 @@ class ChessView extends WatchUi.View {
         if (_selected != -1) {
             tryMove(idx);
         }
+    }
+
+    // --- Button handling: UP/DOWN cycle, ENTER confirms, BACK cancels ---
+    //
+    // With no piece selected the cursor steps through pieces that can move;
+    // with one selected it steps through that piece's destinations.
+
+    function cycleCursor(dir as Number) as Void {
+        if (_gameOver || _turn != WHITE) {
+            return;
+        }
+        if (_selected != -1) {
+            var n = _destinations.size();
+            var pos = _destinations.indexOf(_cursor);
+            if (pos < 0) {
+                pos = (dir > 0) ? -1 : 0;
+            }
+            _cursor = _destinations[(pos + dir + n) % n];
+        } else {
+            var start = (_cursor == -1) ? ((dir > 0) ? -1 : 0) : _cursor;
+            var k = 1;
+            while (k <= 64) {
+                var idx = ((start + dir * k) % 64 + 64) % 64;
+                if (pieceSide(_cells[idx]) == WHITE && legalMovesFor(idx).size() > 0) {
+                    _cursor = idx;
+                    break;
+                }
+                k++;
+            }
+        }
+        WatchUi.requestUpdate();
+    }
+
+    function confirmCursor() as Void {
+        if (_gameOver) {
+            resetGame();
+            return;
+        }
+        if (_turn != WHITE) {
+            return;
+        }
+        if (_cursor == -1) {
+            cycleCursor(1);
+        } else if (_selected == -1) {
+            selectPiece(_cursor);
+            if (_selected != -1) {
+                _cursor = _destinations[0];
+            }
+        } else {
+            tryMove(_cursor);
+        }
+    }
+
+    // Returns false when there is nothing to cancel, so BACK can leave the game.
+    function cancelSelection() as Boolean {
+        if (_selected == -1) {
+            return false;
+        }
+        _cursor = _selected;
+        clearSelection();
+        return true;
     }
 
     private function clearSelection() as Void {
@@ -903,6 +967,13 @@ class ChessView extends WatchUi.View {
                 dc.fillCircle(cx, cy, dot);
             }
             i++;
+        }
+
+        if (_cursor != -1 && !_gameOver) {
+            dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
+            dc.setPenWidth(3);
+            dc.drawRectangle(_boardLeft + (_cursor % SIZE) * _cellSize + 1, _boardTop + (_cursor / SIZE) * _cellSize + 1, _cellSize - 2, _cellSize - 2);
+            dc.setPenWidth(1);
         }
     }
 }

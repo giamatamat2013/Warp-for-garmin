@@ -24,6 +24,9 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         if (selectHeavyGame(id)) {
             return;
         }
+        if (selectBigGame(id)) {
+            return;
+        }
         if (id == :item_pong) {
             var view = new PongView();
             WatchUi.pushView(view, new PongDelegate(view), WatchUi.SLIDE_LEFT);
@@ -76,6 +79,27 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         return false;
     }
 
+    // Games in Games.HAS_BIG_GAMES (currently Chess, Checkers): touch-only and
+    // too big for 128KB devices, so their code is left out there (see monkey.jungle).
+    (:bigGames)
+    private function selectBigGame(id as Symbol) as Boolean {
+        if (id == :item_chess) {
+            var view = new ChessView();
+            WatchUi.pushView(view, new ChessDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_checkers) {
+            var view = new CheckersView();
+            WatchUi.pushView(view, new CheckersDelegate(view), WatchUi.SLIDE_LEFT);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    (:noBigGames)
+    private function selectBigGame(id as Symbol) as Boolean {
+        return false;
+    }
+
     // Games in CustomMainMenuView.TOUCH_ONLY_GAMES. Their code is left out on
     // low-memory non-touch devices (see monkey.jungle), where the menu never
     // shows them and the empty fallback below is built instead.
@@ -120,12 +144,6 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         } else if (id == :item_reversi) {
             var view = new ReversiView();
             WatchUi.pushView(view, new ReversiDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_checkers) {
-            var view = new CheckersView();
-            WatchUi.pushView(view, new CheckersDelegate(view), WatchUi.SLIDE_LEFT);
-        } else if (id == :item_chess) {
-            var view = new ChessView();
-            WatchUi.pushView(view, new ChessDelegate(view), WatchUi.SLIDE_LEFT);
         } else {
             return false;
         }
@@ -163,9 +181,12 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
     function onKey(keyEvent as WatchUi.KeyEvent) as Boolean {
         var key = keyEvent.getKey();
         if (key == WatchUi.KEY_UP) {
-            _view.moveSelection(-2);
+            // Steps one tile at a time (not a row of 2) so devices with only
+            // UP/DOWN buttons - no LEFT/RIGHT - can still reach the right
+            // column instead of being stuck in the left one forever.
+            _view.moveSelection(-1);
         } else if (key == WatchUi.KEY_DOWN) {
-            _view.moveSelection(2);
+            _view.moveSelection(1);
         } else if (key == WatchUi.KEY_LEFT) {
             _view.moveSelection(-1);
         } else if (key == WatchUi.KEY_RIGHT) {

@@ -3,7 +3,7 @@ import Toybox.WatchUi;
 import Toybox.Lang;
 import Toybox.Math;
 
-(:touchGames)
+(:bigGames)
 class CheckersView extends WatchUi.View {
 
     private const EMPTY = 0;

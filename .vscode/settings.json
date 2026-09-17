@@ -4,5 +4,6 @@
     "monkeyC.releaseBuild": false,
     "monkeyC.testBuild": false,
     "monkeyC.typeCheckLevel": "Informative",
-    "monkeyC.currentDevice": "vivoactive4s"
+    "monkeyC.currentDevice": "fr970",
+    "monkeyC.developerKeyPath": "c:\\Users\\Giamat13\\code\\Warp-for-garmin\\developer_key.der"
 }
