@@ -1,9 +1,0 @@
-{
-    "monkeyC.jungleFiles": "monkey.jungle",
-    "monkeyC.outputPath": "${workspaceRoot}/bin",
-    "monkeyC.releaseBuild": false,
-    "monkeyC.testBuild": false,
-    "monkeyC.typeCheckLevel": "Informative",
-    "monkeyC.currentDevice": "fr970",
-    "monkeyC.developerKeyPath": "c:\\Users\\Giamat13\\code\\Warp-for-garmin\\developer_key.der"
-}

@@ -6,3 +6,4 @@ internal-mir/
 *.prg
 *.iq
 *.debug.xml
+.vscode/settings.json
