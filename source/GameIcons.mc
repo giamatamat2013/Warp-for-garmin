@@ -47,6 +47,8 @@ module GameIcons {
         "C<<5CJ<5C<J5CJJ5",  // simon
         "L4JQEP3?GFFCPCC=5",  // balanceball
         "r22RRKC<<5WCJ<5C<J5KCJJ5W",  // reversi
+        "r22RRGR:288RJ288R2:88RB:88R:B88RJB88R2J88RBJ88W",  // checkers
+        "r22RRR=F<:CC?6LC6C=L@9F9",  // chess
         "L<2<SLI2ISL2<S<L2ISIL33;;L;33;cNN4"  // tictactoe
     ];
 
