@@ -1,7 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-(:touchGames)
+(:touchGames :extendedCode)
 class WordRushDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as WordRushView;

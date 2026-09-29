@@ -1,6 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+(:extendedCode)
 class DinoDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as DinoView;

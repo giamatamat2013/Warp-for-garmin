@@ -16,6 +16,13 @@ project.manifest = manifest.xml
 # Big games (see CustomMainMenuView.BIG_GAMES / Games.HAS_BIG_GAMES) -
 # currently Chess and Checkers, touch-only games too large for 128KB devices - are left
 # out (:bigGames) on every 128KB-or-smaller device, touch or not.
+#
+# Every game class is also annotated (:extendedCode): on API 5.1+ devices its
+# code lives in extended code space and is paged in on demand, so only the
+# menu stays in the app heap instead of every game at once. Older devices
+# ignore the annotation (with a compiler warning) and keep the code in the
+# heap, so never add extendedCode to excludeAnnotations - that would drop the
+# games entirely.
 base.excludeAnnotations = noTouchGames;noHeavyGames;noBigGames
 # 128KB touch device: keep touch games, drop the big and heavy ones.
 venusq.excludeAnnotations = noTouchGames;heavyGames;bigGames

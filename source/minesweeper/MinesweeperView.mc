@@ -4,7 +4,7 @@ import Toybox.Lang;
 import Toybox.Math;
 import Toybox.System;
 
-(:touchGames)
+(:touchGames :extendedCode)
 class MinesweeperView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "minesweeper_best";

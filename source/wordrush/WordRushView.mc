@@ -6,7 +6,7 @@ import Toybox.Math;
 
 // Word Rush: spell as many valid 3 and 4-letter words as possible before time runs out!
 // Tap letter tiles in sequence, then tap SUBMIT.
-(:touchGames)
+(:touchGames :extendedCode)
 class WordRushView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "wordrush_high";

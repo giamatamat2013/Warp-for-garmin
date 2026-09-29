@@ -7,6 +7,7 @@ import Toybox.Math;
 
 // Tilt Maze: roll a ball through a procedurally generated maze using tilt.
 // Reaching the exit (bottom-right) advances to the next level.
+(:extendedCode)
 class TiltMazeView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "tiltmaze_high";

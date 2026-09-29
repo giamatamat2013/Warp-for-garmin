@@ -4,7 +4,7 @@ import Toybox.Timer;
 import Toybox.Lang;
 import Toybox.Math;
 
-(:touchGames)
+(:touchGames :extendedCode)
 class SnakeView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "snake_high";

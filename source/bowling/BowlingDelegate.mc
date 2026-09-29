@@ -1,7 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-(:heavyGames)
+(:heavyGames :extendedCode)
 class BowlingDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as BowlingView;

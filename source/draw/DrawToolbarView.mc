@@ -3,7 +3,7 @@ import Toybox.WatchUi;
 import Toybox.Lang;
 
 // Categorized picker for shapes, tools, and colors.
-(:touchGames)
+(:touchGames :extendedCode)
 class DrawToolbarView extends WatchUi.View {
 
     public const KIND_CATEGORY = 0;

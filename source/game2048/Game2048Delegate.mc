@@ -1,7 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-(:touchGames)
+(:touchGames :extendedCode)
 class Game2048Delegate extends WatchUi.BehaviorDelegate {
 
     private var _view as Game2048View;

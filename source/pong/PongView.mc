@@ -5,6 +5,7 @@ import Toybox.System;
 import Toybox.Math;
 import Toybox.Lang;
 
+(:extendedCode)
 class PongView extends WatchUi.View {
 
     private const PADDLE_HEIGHT = 36;

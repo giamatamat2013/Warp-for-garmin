@@ -9,6 +9,7 @@ import Toybox.Math;
 // accelerometer) rolls the ball downhill just like a real ball on an
 // unlevel surface; it "falls off" and ends the round once it reaches the
 // edge of the board.
+(:extendedCode)
 class BalanceBallView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "balanceball_best_ms";

@@ -1,7 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-(:touchGames)
+(:touchGames :extendedCode)
 class MemoryMatchDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as MemoryMatchView;

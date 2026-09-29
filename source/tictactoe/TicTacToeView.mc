@@ -3,7 +3,7 @@ import Toybox.WatchUi;
 import Toybox.Lang;
 import Toybox.Math;
 
-(:touchGames)
+(:touchGames :extendedCode)
 class TicTacToeView extends WatchUi.View {
 
     private const EMPTY = 0;

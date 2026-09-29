@@ -1,6 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+(:extendedCode)
 class BalanceBallDelegate extends WatchUi.BehaviorDelegate {
 
     private const NUDGE = 60.0;

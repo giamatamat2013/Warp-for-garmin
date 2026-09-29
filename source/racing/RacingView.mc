@@ -7,6 +7,7 @@ import Toybox.Lang;
 // Endless three-lane racer: switch lanes to avoid the bot cars coming down
 // the road. Score is how many you dodge; the road speeds up over time, same
 // ramp-up feel as Dino's obstacle speed.
+(:extendedCode)
 class RacingView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "racing_high";

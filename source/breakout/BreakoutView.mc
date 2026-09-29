@@ -4,6 +4,7 @@ import Toybox.Timer;
 import Toybox.Lang;
 import Toybox.Math;
 
+(:extendedCode)
 class BreakoutView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "breakout_high";

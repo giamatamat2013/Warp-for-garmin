@@ -7,6 +7,7 @@ import Toybox.Math;
 // Asteroid Dodge: spaceship dodging descending asteroids.
 // Steer left/right with keys or drag on touch screens.
 // Score increases for each asteroid successfully evaded.
+(:extendedCode)
 class AsteroidView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "asteroid_high";

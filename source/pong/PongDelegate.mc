@@ -1,6 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+(:extendedCode)
 class PongDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as PongView;

@@ -5,6 +5,7 @@ import Toybox.System;
 import Toybox.Math;
 import Toybox.Lang;
 
+(:extendedCode)
 class FlappyView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "flappy_high";

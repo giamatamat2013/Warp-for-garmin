@@ -7,6 +7,7 @@ import Toybox.Math;
 // Gravity Flip: side-scrolling platformer runner.
 // Gravity constantly pulls player up or down. Tap / Enter flips gravity.
 // Player must land on platforms and avoid falling off top or bottom bounds.
+(:extendedCode)
 class GravityFlipView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "gravityflip_high";

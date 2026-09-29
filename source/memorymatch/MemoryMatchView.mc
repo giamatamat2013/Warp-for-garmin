@@ -3,7 +3,7 @@ import Toybox.WatchUi;
 import Toybox.Lang;
 import Toybox.Math;
 
-(:touchGames)
+(:touchGames :extendedCode)
 class MemoryMatchView extends WatchUi.View {
 
     private const BEST_KEY = "memorymatch_best";

@@ -4,7 +4,7 @@ import Toybox.Lang;
 import Toybox.Math;
 import Toybox.Timer;
 
-(:bigGames)
+(:bigGames :extendedCode)
 class ChessView extends WatchUi.View {
 
     private const EMPTY = 0;

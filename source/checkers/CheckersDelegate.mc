@@ -1,7 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-(:bigGames)
+(:bigGames :extendedCode)
 class CheckersDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as CheckersView;

@@ -5,7 +5,7 @@ import Toybox.Math;
 import Toybox.System;
 import Toybox.Application.Storage;
 
-(:touchGames)
+(:touchGames :extendedCode)
 class Game2048View extends WatchUi.View {
 
     private const SAVE_KEY = "2048_save";

@@ -1,7 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-(:heavyGames)
+(:heavyGames :extendedCode)
 class InvadersDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as InvadersView;

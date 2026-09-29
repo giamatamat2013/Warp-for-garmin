@@ -5,7 +5,7 @@ import Toybox.System;
 import Toybox.Math;
 import Toybox.Lang;
 
-(:heavyGames)
+(:heavyGames :extendedCode)
 class BowlingView extends WatchUi.View {
 
     private const NUM_PINS = 10;

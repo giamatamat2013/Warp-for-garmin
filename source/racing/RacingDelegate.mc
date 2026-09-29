@@ -1,6 +1,7 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+(:extendedCode)
 class RacingDelegate extends WatchUi.BehaviorDelegate {
 
     private var _view as RacingView;

@@ -4,7 +4,7 @@ import Toybox.Timer;
 import Toybox.Math;
 import Toybox.Lang;
 
-(:touchGames)
+(:touchGames :extendedCode)
 class WhackView extends WatchUi.View {
 
     private const HIGH_SCORE_KEY = "whack_best";
