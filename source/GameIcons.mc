@@ -34,6 +34,7 @@ module GameIcons {
         "C:84CL<6P4CC;PCMJP",  // asteroid
         "CC62C><2CH<2CCL5",  // bowling
         "r22RRC:L4CCL4CLL4",  // connect4
+        "r22RRL66@FQAIB:3",  // dvd
         "R=;99RF;99R4D99R=D99",  // tetris
         "r22@@rF4<<r6H88rDD@@",  // 2048
         "L>2>TLH2HTL2>T>L2HTHCCC5",  // minesweeper

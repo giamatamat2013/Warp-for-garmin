@@ -27,7 +27,10 @@ class CustomMainMenuDelegate extends WatchUi.BehaviorDelegate {
         if (selectBigGame(id)) {
             return;
         }
-        if (id == :item_pong) {
+        if (id == :item_dvd) {
+            var view = new DvdView();
+            WatchUi.pushView(view, new DvdDelegate(view), WatchUi.SLIDE_LEFT);
+        } else if (id == :item_pong) {
             var view = new PongView();
             WatchUi.pushView(view, new PongDelegate(view), WatchUi.SLIDE_LEFT);
         } else if (id == :item_flappy) {
